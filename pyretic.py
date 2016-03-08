@@ -270,8 +270,7 @@ def main():
                  poxpath = os.path.abspath(p)
                  break
         if poxpath is None:
-            print 'Error: pox not found in PYTHONPATH'
-            sys.exit(1)
+            poxpath = 'pox'
         pox_exec = os.path.join(poxpath,'pox.py')
         python=sys.executable
         # TODO(josh): pipe pox_client stdout to subprocess.PIPE or

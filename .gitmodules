@@ -1,3 +1,6 @@
 [submodule "mininet"]
 	path = mn
 	url = https://github.com/mininet/mininet.git
+[submodule "pox"]
+	path = pox
+	url = https://github.com/noxrepo/pox.git
