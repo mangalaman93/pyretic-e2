@@ -19,3 +19,4 @@ python pyretic.py pyretic.e2-examples.pipelet_test
 * [networkx tutorial](https://networkx.github.io/documentation/latest/tutorial/tutorial.html)
 * [Install pyretic VM](https://github.com/frenetic-lang/pyretic/wiki/Building-the-Pyretic-VM)
 * [Running pyretic](https://github.com/frenetic-lang/pyretic/wiki/running-pyretic)
+* [Mininet](https://github.com/mininet/mininet/wiki/Introduction-to-Mininet)
