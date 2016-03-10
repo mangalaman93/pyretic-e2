@@ -2,7 +2,7 @@
 # Computer Networks course project, CS6250, Georgia Tech #
 ##########################################################
 
-from mn.mininet.cli import CLI
+from mininet.cli import CLI
 from pyretic.e2.lg import *
 
 #

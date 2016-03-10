@@ -49,6 +49,8 @@ of_client = None
 enable_profile = False
 eval_profile_enabled = False
 
+# add mininet to path
+sys.path.append("mn/")
 
 def signal_handler(signal, frame):
     print '\n----starting pyretic shutdown------'
