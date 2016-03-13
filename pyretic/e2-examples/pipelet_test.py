@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 #
 
 # creating NFs
-internal = E2NF("inernal", 1)
+internal = E2NF("internal", 1)
 p = E2NF("p", 1)
 n = E2NF("n", 1)
 f = E2NF("f", 1)
