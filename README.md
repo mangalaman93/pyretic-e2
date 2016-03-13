@@ -10,6 +10,11 @@ sudo apt-get install python-dev python-pip python-netaddr screen hping3 ml-lpt g
 sudo pip install networkx bitarray netaddr ipaddr pytest ipdb sphinx pyparsing==1.5.7 yappi
 ```
 
+Install following for generating http traffic -
+```
+apt-get install nmap
+```
+
 ### How to Run (examples)
 ```
 python pyretic.py pyretic.e2-examples.pipelet_test
