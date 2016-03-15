@@ -3,9 +3,16 @@
 ##########################################################
 
 from pyretic.e2.lg import *
+from pyretic.e2.pipelet import *
+from pyretic.lib.corelib import *
+from pyretic.lib.std import *
 from mininet.topo import Topo
 from mininet.net import Mininet
+from mininet.node import Controller, RemoteController, OVSKernelSwitch, UserSwitch
 from mininet.cli import CLI
+from mininet.log import setLogLevel
+from mininet.link import Link, TCLink
+from pyretic.e2.e2 import *
 
 # Example taken from E2 paper 15(a)
 #
@@ -31,30 +38,28 @@ from mininet.cli import CLI
 #       +--------+   +------+
 #
 
-class PiepeletATopo(Topo):
-    def __init__(self):
-        Topo.__init__(self)
 
-        # Add hosts and switches
-        internal_host = self.addHost('internal')
-        external_host = self.addHost('external')
-        internal = self.addSwitch('internal')
-        p = self.addSwitch('p')
-        n = self.addSwitch('n')
-        f = self.addSwitch('f')
-        external = self.addSwitch('external')
+net = Mininet( controller=RemoteController, link=TCLink, switch=OVSKernelSwitch )
 
-        # Add links
-        self.addLink(internal_host, internal)
-        self.addLink(internal, p)
-        self.addLink(p, n)
-        self.addLink(internal, n)
-        self.addLink(n, f)
-        self.addLink(f, external)
-        self.addLink(external, external_host)
+# Add hosts and switches
+internal_host = net.addHost('h1')
+external_host = net.addHost('h2')
+internal = net.addSwitch('s1')
+p = net.addSwitch('s2')
+n = net.addSwitch('s3')
+f = net.addSwitch('s4')
+external = net.addSwitch('s5')
 
-# creating a mininet class
-net = Mininet(topo = PiepeletATopo, controller=lambda name: RemoteController(name='c0', ip='127.0.0.1', port=6633))
+# Add links
+net.addLink(internal_host, internal)
+net.addLink(internal, p)
+net.addLink(p, n)
+net.addLink(internal, n)
+net.addLink(n, f)
+net.addLink(f, external)
+net.addLink(external, external_host)
+c8 = net.addController( 'c8', controller=RemoteController, ip='127.0.0.1', port=6633 )
+
 net.start()
 
 # creating NFs
@@ -81,4 +86,4 @@ def helper():
     internal_host.sendCmd(src_s2)
     external_host.sendCmd(dest)
 
-E2(net, [fifa], helper).start()
+e2(net, [fifa], helper).start()
