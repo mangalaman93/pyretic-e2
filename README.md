@@ -20,6 +20,9 @@ apt-get install nmap
 python pyretic.py pyretic.e2-examples.pipelet_test
 ```
 
+### TODO
+* Update README
+
 ### References
 * [networkx tutorial](https://networkx.github.io/documentation/latest/tutorial/tutorial.html)
 * [Install pyretic VM](https://github.com/frenetic-lang/pyretic/wiki/Building-the-Pyretic-VM)

@@ -4,6 +4,7 @@
 # The Pyretic Project                                                          #
 # frenetic-lang.org/pyretic                                                    #
 # author: Joshua Reich (jreich@cs.princeton.edu)                               #
+# modified by: Mark Tengi (markat@princeton.edu)
 ################################################################################
 # Licensed to the Pyretic Project by one or more contributors. See the         #
 # NOTICES file distributed with this work for additional information           #
@@ -31,18 +32,15 @@
 from pyretic.core.runtime import Runtime
 from pyretic.backend.backend import Backend
 import sys
-import threading
 import signal
 import subprocess
 from importlib import import_module
 from optparse import OptionParser
+import re
 import os
 import logging
 from multiprocessing import Queue, Process
 import pyretic.core.util as util
-import yappi
-from pyretic.evaluations.stat import Stat
-import shlex
 
 ################################################################################
 # Implement the visualization aspects by overwriting the functions of the
@@ -66,37 +64,23 @@ runtime.ConcreteNetwork = VisConcreteNetwork
 
 of_client = None
 network = None
-enable_profile = False
-eval_profile_enabled = False
-
-# add mininet to path
-sys.path.append("mn/")
 
 def signal_handler(signal, frame):
+    # 
+    #if network.sigint():
+    #    return
     print '\n----starting pyretic shutdown------'
     # for thread in threading.enumerate():
     #     print (thread,thread.isAlive())
-    if of_client:
-        print "attempting to kill of_client"
-        of_client.kill()
+    print "attempting to kill of_client"
+    of_client.kill()
 
     network.stop()
-
+    
     # print "attempting get output of of_client:"
     # output = of_client.communicate()[0]
     # print output
     print "pyretic.py done"
-    # Print profile information if enabled
-    if enable_profile:
-        funcstats = yappi.get_func_stats()
-        funcstats.sort("tsub")
-        funcstats.print_all(columns={0:("name",38), 1:("ncall",8), 2:("tsub",8),
-                                     3:("ttot",8), 4:("tavg", 8)})
-
-    global eval_profile_enabled
-    if eval_profile_enabled:
-        Stat.stop()
-
     sys.exit(0)
 
 
@@ -106,10 +90,9 @@ def parseArgs():
     desc = ( 'Pyretic runtime' )
     usage = ( '%prog [options]\n'
               '(type %prog -h for details)' )
-
+    
     end_args = 0
     for arg in sys.argv[1:]:
-        import re
         if not re.match('-',arg):
             end_args = sys.argv.index(arg)
     kwargs_to_pass = None
@@ -118,72 +101,27 @@ def parseArgs():
         sys.argv = sys.argv[:end_args+1]
 
     op = OptionParser( description=desc, usage=usage )
-    op.add_option( '--frontend-only', '-f', action="store_true",
+    op.add_option( '--frontend-only', '-f', action="store_true", 
                      dest="frontend_only", help = 'only start the frontend'  )
     op.add_option( '--mode', '-m', type='choice',
-                     choices=['interpreted','i','reactive0','r0','proactive0','p0','proactive1','p1'],
+                     choices=['interpreted','i','reactive0','r0','proactive0','p0','proactive1','p1'], 
                      help = '|'.join( ['interpreted/i','reactive0/r0','proactiveN/pN for N={0,1}'] )  )
-    op.add_option( '--nx', action="store_true",
-                   dest="nx", help="use nicira extensions in pox" )
-    op.add_option( '--pipeline', dest="pipeline",
-                   help="pipeline configuration (if --nx enabled)",
-                   default="default_pipeline")
     op.add_option( '--verbosity', '-v', type='choice',
                    choices=['low','normal','high','please-make-it-stop'],
                    default = 'low',
                    help = '|'.join( ['low','normal','high','please-make-it-stop'] )  )
-    op.add_option( '--enable_profile', '-p', action="store_true",
-                   dest="enable_profile",
-                   help = 'enable yappi multithreaded profiler' )
 
-    op.add_option('--eval_result_path', '-e', action='store',
-                    type='string', dest='eval_result_path')
-    op.add_option( '--enable_disjoint', '-d', action="store_true",
-                    dest="disjoint_enabled",
-                    help = 'enable disjoint optimization')
-    op.add_option('--enable_default_link', '-l', action="store_true",
-                    dest='default_enabled',
-                    help = 'enable adding default link optimization, only woks with disjoint on')
-    op.add_option('--enable_integration', '-i', action="store_true",
-                    dest='integrate_enabled',
-                    help = 'enable integration of tag and capture optimization, only works with multitable on')
-    op.add_option('--enable_multitable', '-u', action="store_true",
-                    dest = 'multitable_enabled',
-                    help = 'enable multitable optimization')
-    op.add_option('--enable_ragel', '-r', action="store_true",
-                    dest = 'ragel_enabled',
-                    help = 'enable ragel optimization')
-    op.add_option('--enable_partition', '-a', action = "store_true",
-                    dest = 'partition_enabled',
-                    help = 'enable partition optimization')
-    op.add_option('--switch_count', '-s', type = int,
-                    dest = 'switch_cnt',
-                    help = 'The expected number of switches, used for offline analysis')
-    op.add_option('--enable_cache', '-c', action = "store_true",
-                    dest = 'cache_enabled',
-                    help = 'enable cache optimization')
-    op.add_option('--enable_edge_contraction', '-g', action = "store_true",
-                    dest = 'edge_contraction_enabled',
-                    help = 'enable edge contraction optimization, only works with cache enabled')
-    op.add_option('--use_pyretic', action="store_true",
-                  dest = 'use_pyretic',
-                  help = "Use the pyretic compiler (uses netkat by default)")
-    op.set_defaults(frontend_only=False, mode='proactive0', enable_profile=False,
-                    disjoint_enabled=False, default_enabled=False,
-                    integrate_enabled=False, multitable_enabled=False,
-                    ragel_enabled=False, partition_enabled=False,
-                    switch_cnt=None, cache_enabled=False,
-                    edge_contraction_enabled=False,
-                    nx=False, use_pyretic=False)
+    # Add option to specify a topology file
+    op.add_option( '--topo-file', '-t', type='string', action='store',
+                   dest='topo_file', help='biuld and run a topology from the given GML file' )
 
     op.set_defaults(frontend_only=False,mode='reactive0')
     options, args = op.parse_args()
 
     return (op, options, args, kwargs_to_pass)
 
-
 def main():
-    global of_client, network, enable_profile
+    global of_client, network
     (op, options, args, kwargs_to_pass) = parseArgs()
     if options.mode == 'i':
         options.mode = 'interpreted'
@@ -213,24 +151,20 @@ def main():
         sys.exit(1)
 
     main = module.main
-    try:
-        path_main = module.path_main
-    except:
-        path_main = None
     kwargs = { k : v for [k,v] in [ i.lstrip('--').split('=') for i in kwargs_to_pass ]}
 
     sys.setrecursionlimit(1500) #INCREASE THIS IF "maximum recursion depth exceeded"
 
     # Set up multiprocess logging.
-    verbosity_map = { 'low' : logging.ERROR,
-                      'normal' : logging.WARNING,
-                      'high' : logging.INFO,
+    verbosity_map = { 'low' : logging.WARNING,
+                      'normal' : logging.INFO,
+                      'high' : logging.DEBUG,
                       'please-make-it-stop' : logging.DEBUG }
     logging_queue = Queue()
 
     # Make a logging process.
     def log_writer(queue, log_level):
-        formatter = logging.Formatter('%(levelname)s:%(name)s:%(asctime)s: %(message)s')
+        formatter = logging.Formatter('%(levelname)s:%(name)s: %(message)s')
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         handler.setLevel(log_level)
@@ -256,53 +190,35 @@ def main():
     logger.addHandler(handler)
     logger.setLevel(log_level)
 
-    if options.eval_result_path:
-        global eval_profile_enabled
-        eval_profile_enabled = True
-        Stat.start(options.eval_result_path)
+    # Check for root. Mininet requires root and will complain if we're not
+    if options.topo_file and os.getuid() != 0:
+        print 'Running in Mininet mode requies root'
+        exit(1)
 
-    """ Start the frenetic compiler-server """
-    if not options.use_pyretic and options.mode == 'proactive0':
-        netkat_cmd = "bash start-frenetic.sh"
-        try:
-            output = subprocess.Popen(netkat_cmd, shell=True,
-                                      stderr=subprocess.STDOUT)
-        except Exception as e:
-            print "Could not start frenetic server successfully."
-            print e
-            sys.exit(1)
 
     # Start websocket forwarder
     start_ws_forwarder()
-
+    
     # Start the Runtime with a policy that forwards all packets to us
     given_pol = main(**kwargs)
     fwd = FwdBucket()
     cb = VisCountBucket()
-    cb.add_match({}, 100, 1)
-    pol = lambda: fwd + cb + given_pol
+    cb.add_match(identity)
 
-    """ Start the runtime. """
-    opt_flags_arg = (options.disjoint_enabled, options.default_enabled,
-                     options.integrate_enabled, options.multitable_enabled,
-                     options.ragel_enabled, options.partition_enabled,
-                     options.switch_cnt, options.cache_enabled,
-                     options.edge_contraction_enabled)
-    runtime = Runtime(Backend(),pol,path_main,kwargs,
-                      mode=options.mode, verbosity=options.verbosity,
-                      opt_flags=opt_flags_arg, use_nx=options.nx,
-                      pipeline=options.pipeline,
-                      use_pyretic=options.use_pyretic)
+    pol = lambda: fwd + cb + given_pol
+    #pol = lambda: cb + given_pol # Find a way to get rid of fwdbucket. Maybe count flowstats?
+
+    runtime = Runtime(Backend(),pol,{},options.mode,options.verbosity)
 
     # This is our VisConcreteNetwork
     network = runtime.network
 
     # Every packet through the network will be pushed to the handle_pkt function
     fwd.register_callback(network.handle_pkt)
+    
     network.register_bucket(cb)
     network.register_policy(given_pol)
 
-    """ Start pox backend. """
     if not options.frontend_only:
         try:
             output = subprocess.check_output('echo $PYTHONPATH',shell=True).strip()
@@ -311,31 +227,42 @@ def main():
             sys.exit(1)
         poxpath = None
         for p in output.split(':'):
-            import re
-            if re.match('.*pox/?$',p):
+             if re.match('.*pox/?$',p):
                  poxpath = os.path.abspath(p)
                  break
         if poxpath is None:
-            poxpath = 'pox'
+            print 'Error: pox not found in PYTHONPATH'
+            sys.exit(1)
         pox_exec = os.path.join(poxpath,'pox.py')
         python=sys.executable
         # TODO(josh): pipe pox_client stdout to subprocess.PIPE or
         # other log file descriptor if necessary
-        pox_cmd = "python %s %s of_client.pox_client %s %s" % (
-            pox_exec,
-            'openflow.nicira --convert-packet-in' if options.nx else '',
-            '--use_nx' if options.nx else '',
-            "--pipeline=%s" % options.pipeline if options.nx else '')
-        of_client = subprocess.Popen(shlex.split(pox_cmd),
+        of_client = subprocess.Popen([python, 
+                                      pox_exec,
+                                      'of_client.pox_client' ],
                                      stdout=sys.stdout,
                                      stderr=subprocess.STDOUT)
 
-    """ Profiling. """
-    if options.enable_profile:
-        enable_profile = True
-        yappi.start()
     signal.signal(signal.SIGINT, signal_handler)
-    signal.pause()
+
+    # Open a new xterm that will build a topology from the given file and then enter the mininet CLI
+    if options.topo_file:
+        #subprocess.Popen(("xterm -e sudo python pyretic/debug/mn.py %s" % options.topo_file).split())
+        from multiprocessing import Pipe
+        from pyretic.debug import mn
+        #cli_in, shell_out = Pipe()
+        #subprocess.Popen('xterm'.split(),stdout=subprocess.PIPE)
+        #import time
+        #p=Process(target=mn.main, args=(options.topo_file, network))
+        #p.start()
+
+        mn.main(options.topo_file, network)
+        #signal.pause()
+        signal_handler(None, None)
+
+    else:
+        signal.pause()
+
 
 if __name__ == '__main__':
     main()
