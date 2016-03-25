@@ -23,7 +23,8 @@ class e2():
         interfaces={}
         port={}
         for s in self.net.switches:
-            port[s.name] = s.listenPort
+            #print s.name, s.dpid, s.listenPort, s.defaultDpid()
+            port[s.name] = s.dpid
 
         for link in self.net.links:
             if link.intf1.name.split("-")[0] not in interfaces:
@@ -47,9 +48,9 @@ class e2():
                     else:
                         route = route + rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name])
                 if allroutes is None:
-                    allroutes = (match(srcport = port[sw]) >> route)
+                    allroutes = (match(switch = port[sw]) >> route)
                 else:
-                    allroutes += (match(srcport = port[sw]) >> route)
+                    allroutes += (match(switch = port[sw]) >> route)
             #print route
         print allroutes
         self.net.stop()
