@@ -3,6 +3,7 @@
 ##########################################################
 
 from pyretic.e2.lg import *
+from pyretic.lib.corelib import *
 
 #
 # +--------+                      +---------+
