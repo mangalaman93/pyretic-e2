@@ -11,14 +11,16 @@ from mininet.node import Controller, RemoteController, OVSKernelSwitch, UserSwit
 from mininet.cli import CLI
 from mininet.link import Link, TCLink
 
+my_helper=None
 class e2():
     def __init__(self, net, pipelets, helper):
-        self.net = net
+        global my_helper
+	self.net = net
         self.pipelets = pipelets[0]
-        self.helper = helper
+        my_helper = helper
 
     def start(self):
-
+	global my_helper
         nodedict = {}
         interfaces={}
         port={}
@@ -52,6 +54,8 @@ class e2():
                 else:
                     allroutes += (match(switch = port[sw]) >> route)
             #print route
-        print allroutes
-        self.net.stop()
+        #print allroutes
+        my_helper()
+	return allroutes
+	#self.net.stop()
         #return flood()
