@@ -15,9 +15,6 @@ sudo pip install networkx bitarray netaddr ipaddr pytest ipdb sphinx pyparsing==
 python pyretic.py -m p0 pyretic.e2-examples.pipelet_test
 ```
 
-### TODO
-* Update README
-
 ### References
 * [networkx tutorial](https://networkx.github.io/documentation/latest/tutorial/tutorial.html)
 * [Install pyretic VM](https://github.com/frenetic-lang/pyretic/wiki/Building-the-Pyretic-VM)
