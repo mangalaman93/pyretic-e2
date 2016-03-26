@@ -385,7 +385,7 @@ class VisConcreteNetwork(ConcreteNetwork):
 
     def handle_pkt(self, pkt):
         sw = pkt.header['switch']
-        inport = pkt.header['inport']
+        inport = pkt.header['port']
         evald = self.pol.eval(pkt)
         outports = [p.header['outport'] for p in evald]
 
@@ -398,7 +398,7 @@ class VisConcreteNetwork(ConcreteNetwork):
 
         pkt_info = {}
         pkt_info['switch'] = pkt.header['switch']
-        pkt_info['inport'] = pkt.header['inport']
+        pkt_info['inport'] = pkt.header['port']
         pkt_info['outports'] = outports
         pkt_info['message_type'] = 'packet'
 
@@ -467,9 +467,9 @@ class VisConcreteNetwork(ConcreteNetwork):
     # When a port comes up, we can assume that it's connected to a host (not
     # tracked by Pyretic)
     # TODO: figure out how to get mininet's host number (probably related to order brought up)
-    def handle_port_join(self, switch, port_no, config, status):
-        super(VisConcreteNetwork,self).handle_port_join(switch, port_no, config, status)
-        print 'handle port join: %d %d %s %s' % (switch, port_no, config, status)
+    def handle_port_join(self, switch, port_no, config, status, port_type):
+        super(VisConcreteNetwork,self).handle_port_join(switch, port_no, config, status, port_type)
+        print 'handle port join: %d %d %s %s %s' % (switch, port_no, config, status, port_type)
 
         node1 = Node(self.net, node_type = 'host')
         node2 = self.net.get_node(switch)

@@ -74,16 +74,16 @@ fifa.add_edges_from([(internal_nf, p_nf, {'filter': match(dstport = 8000)}),
     (n_nf, f_nf, {'filter': match()}),
     (f_nf, external_nf, {'filter': match(dstport = 8000)})])
 
-def helper():
-    dest = LoadGenerator.dest(8000)
-    src_s1 = LoadGenerator.src(external_host.IP(), 8000, 1)
-    print src_s1
-    src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1)
-    print src_s2
-    internal_host.sendCmd(src_s1)
-    internal_host.waitOutput()
-    internal_host.sendCmd(src_s2)
-    #external_host.sendCmd(dest)
+# all_pids_to_stop = []
+dest = LoadGenerator.dest(8000)
+src_s1 = LoadGenerator.src(external_host.IP(), 8000, 1)
+src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1)
+internal_host.cmd(src_s1 + " &")
+# all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
+internal_host.cmd(src_s2 + " &")
+# all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
+external_host.cmd(dest + " &")
+# all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
 
 def main():
-    return e2(net, [fifa], helper).start()
+    return e2(net, [fifa]).policy()

@@ -10,7 +10,7 @@ class LoadGenerator(object):
     def src(destip, destport, num_request=0):
         nping = commands.getoutput("which nping")
         if nping:
-            return "sudo {} -N --tcp --rate 1 -c {} -p {} {}".format(nping, num_request, destport, destip)
+            return "{} --tcp --rate 1 -c {} -p {} {}".format(nping, num_request, destport, destip)
         else:
             raise Exception("nping not found!")
 
