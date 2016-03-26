@@ -64,13 +64,14 @@ runtime.ConcreteNetwork = VisConcreteNetwork
 
 ################################################################################
 
+# add pox to path
+sys.path.append("pox/")
+subprocess.call("mn -c", shell=True)
+
 of_client = None
 network = None
 enable_profile = False
 eval_profile_enabled = False
-
-# add mininet to path
-sys.path.append("mn/")
 
 def signal_handler(signal, frame):
     print '\n----starting pyretic shutdown------'
@@ -304,20 +305,7 @@ def main():
 
     """ Start pox backend. """
     if not options.frontend_only:
-        try:
-            output = subprocess.check_output('echo $PYTHONPATH',shell=True).strip()
-        except:
-            print 'Error: Unable to obtain PYTHONPATH'
-            sys.exit(1)
-        poxpath = None
-        for p in output.split(':'):
-            import re
-            if re.match('.*pox/?$',p):
-                 poxpath = os.path.abspath(p)
-                 break
-        if poxpath is None:
-            poxpath = 'pox'
-        pox_exec = os.path.join(poxpath,'pox.py')
+        pox_exec = os.path.join('pox','pox.py')
         python=sys.executable
         # TODO(josh): pipe pox_client stdout to subprocess.PIPE or
         # other log file descriptor if necessary
@@ -326,9 +314,12 @@ def main():
             'openflow.nicira --convert-packet-in' if options.nx else '',
             '--use_nx' if options.nx else '',
             "--pipeline=%s" % options.pipeline if options.nx else '')
+        myenv = os.environ.copy()
+        myenv["PYTHONPATH"] = os.path.dirname(os.path.realpath(__file__))
         of_client = subprocess.Popen(shlex.split(pox_cmd),
                                      stdout=sys.stdout,
-                                     stderr=subprocess.STDOUT)
+                                     stderr=subprocess.STDOUT,
+                                     env=myenv)
 
     """ Profiling. """
     if options.enable_profile:
