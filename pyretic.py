@@ -43,6 +43,8 @@ import pyretic.core.util as util
 import yappi
 from pyretic.evaluations.stat import Stat
 import shlex
+import BaseHTTPServer
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 ################################################################################
 # Implement the visualization aspects by overwriting the functions of the
@@ -72,6 +74,7 @@ of_client = None
 network = None
 enable_profile = False
 eval_profile_enabled = False
+vis_server = None
 
 def signal_handler(signal, frame):
     print '\n----starting pyretic shutdown------'
@@ -98,6 +101,8 @@ def signal_handler(signal, frame):
     if eval_profile_enabled:
         Stat.stop()
 
+    vis_server.shutdown()
+    subprocess.call("mn -c", shell=True)
     sys.exit(0)
 
 
@@ -184,7 +189,7 @@ def parseArgs():
 
 
 def main():
-    global of_client, network, enable_profile
+    global of_client, network, enable_profile, vis_server
     (op, options, args, kwargs_to_pass) = parseArgs()
     if options.mode == 'i':
         options.mode = 'interpreted'
@@ -320,6 +325,16 @@ def main():
                                      stdout=sys.stdout,
                                      stderr=subprocess.STDOUT,
                                      env=myenv)
+
+    """ http server for visualization """
+    HandlerClass = SimpleHTTPRequestHandler
+    ServerClass  = BaseHTTPServer.HTTPServer
+    Protocol     = "HTTP/1.0"
+    server_addr  = ('0.0.0.0', 8000)
+
+    HandlerClass.protocol_version = Protocol
+    vis_server = ServerClass(server_addr, HandlerClass)
+    threading.Thread(target=vis_server.serve_forever).start()
 
     """ Profiling. """
     if options.enable_profile:

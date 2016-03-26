@@ -12,7 +12,7 @@ sudo pip install networkx bitarray netaddr ipaddr pytest ipdb sphinx pyparsing==
 
 ### How to Run (examples)
 ```
-python pyretic.py pyretic.e2-examples.pipelet_test
+python pyretic.py -m p0 pyretic.e2-examples.pipelet_test
 ```
 
 ### TODO
