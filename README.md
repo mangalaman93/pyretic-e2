@@ -6,13 +6,8 @@ E2 framework implementation using pyretic
 ### Installation
 Make sure you are using `python2` (not `python3`). Install dependencies as follows -
 ```
-sudo apt-get install python-dev python-pip python-netaddr screen hping3 ml-lpt graphviz ruby1.9.1-dev libboost-dev libboost-test-dev libboost-program-options-dev libevent-dev automake libtool flex bison pkg-config g++ libssl-dev python-all python-all-dev python-all-dbg
+sudo apt-get install python-dev python-pip python-netaddr screen hping3 ml-lpt graphviz libboost-dev libboost-test-dev libboost-program-options-dev libevent-dev automake libtool flex bison pkg-config g++ libssl-dev python-all python-all-dev python-all-dbg nmap python-tornado python-websocket openvswitch-switch mininet
 sudo pip install networkx bitarray netaddr ipaddr pytest ipdb sphinx pyparsing==1.5.7 yappi
-```
-
-Install following for generating http traffic -
-```
-apt-get install nmap
 ```
 
 ### How to Run (examples)
