@@ -42,7 +42,7 @@ class e2():
                     if route is None:
                         route = rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name])
                     else:
-                        route = route + rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name])
+                        route = route + (rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name]))
                 if policy is None:
                     policy = (match(switch = port[sw]) >> route)
                 else:

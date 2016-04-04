@@ -40,12 +40,12 @@ net = Mininet(controller=RemoteController, link=TCLink, switch=OVSKernelSwitch)
 
 # Add hosts and switches
 internal = net.addSwitch('s1', mac='00:00:00:00:00:01')
-p = net.addSwitch('s2', mac='00:00:00:00:00:01')
-n = net.addSwitch('s3', mac='00:00:00:00:00:01')
-f = net.addSwitch('s4', mac='00:00:00:00:00:01')
-external = net.addSwitch('s5', mac='00:00:00:00:00:01')
-internal_host = net.addHost('h1', mac='00:00:00:00:00:05', ip='10.0.0.5/8')
-external_host = net.addHost('h2', mac='00:00:00:00:00:05', ip='10.0.0.6/8')
+p = net.addSwitch('s2', mac='00:00:00:00:00:02')
+n = net.addSwitch('s3', mac='00:00:00:00:00:03')
+f = net.addSwitch('s4', mac='00:00:00:00:00:04')
+external = net.addSwitch('s5', mac='00:00:00:00:00:05')
+internal_host = net.addHost('h1', mac='00:00:00:00:00:06')
+external_host = net.addHost('h2', mac='00:00:00:00:00:07')
 
 # Add links
 net.addLink(internal_host, internal)
