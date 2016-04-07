@@ -36,6 +36,7 @@ import signal
 import subprocess
 from importlib import import_module
 from optparse import OptionParser
+import re
 import os
 import logging
 from multiprocessing import Queue, Process
@@ -43,38 +44,13 @@ import pyretic.core.util as util
 import yappi
 from pyretic.evaluations.stat import Stat
 import shlex
-import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
-
-################################################################################
-# Implement the visualization aspects by overwriting the functions of the
-# ConcreteNetwork class
-# possible improvement: subclass ConcreteNetwork, make functions that call
-# parent functions and then add our functionality, and then (maybe?) overwrite
-# entire ConcreteNetwork class
-################################################################################
-from pyretic.core import runtime
-from pyretic.debug.visualizer import VisConcreteNetwork, VisCountBucket
-from pyretic.debug.wsforwarder import start_ws_forwarder
-
-from pyretic.lib.corelib import *
-from pyretic.lib.std import *
-from pyretic.lib.query import *
-
-# Overwrite the ConcreteNetwork class so that it'll do our bidding
-runtime.ConcreteNetwork = VisConcreteNetwork
-
-################################################################################
-
-# add pox to path
-sys.path.append("pox/")
-subprocess.call("mn -c", shell=True)
 
 of_client = None
-network = None
 enable_profile = False
 eval_profile_enabled = False
-vis_server = None
+
+# add mininet to path
+sys.path.append("pox/")
 
 def signal_handler(signal, frame):
     print '\n----starting pyretic shutdown------'
@@ -83,9 +59,6 @@ def signal_handler(signal, frame):
     if of_client:
         print "attempting to kill of_client"
         of_client.kill()
-
-    network.stop()
-
     # print "attempting get output of of_client:"
     # output = of_client.communicate()[0]
     # print output
@@ -101,8 +74,6 @@ def signal_handler(signal, frame):
     if eval_profile_enabled:
         Stat.stop()
 
-    vis_server.shutdown()
-    subprocess.call("mn -c", shell=True)
     sys.exit(0)
 
 
@@ -115,7 +86,6 @@ def parseArgs():
 
     end_args = 0
     for arg in sys.argv[1:]:
-        import re
         if not re.match('-',arg):
             end_args = sys.argv.index(arg)
     kwargs_to_pass = None
@@ -182,14 +152,13 @@ def parseArgs():
                     edge_contraction_enabled=False,
                     nx=False, use_pyretic=False)
 
-    op.set_defaults(frontend_only=False,mode='reactive0')
     options, args = op.parse_args()
 
     return (op, options, args, kwargs_to_pass)
 
 
 def main():
-    global of_client, network, enable_profile, vis_server
+    global of_client, enable_profile
     (op, options, args, kwargs_to_pass) = parseArgs()
     if options.mode == 'i':
         options.mode = 'interpreted'
@@ -278,38 +247,32 @@ def main():
             print e
             sys.exit(1)
 
-    # Start websocket forwarder
-    start_ws_forwarder()
-
-    # Start the Runtime with a policy that forwards all packets to us
-    given_pol = main(**kwargs)
-    fwd = FwdBucket()
-    cb = VisCountBucket()
-    cb.add_match({}, 100, 1)
-    pol = lambda: fwd + cb + given_pol
-
     """ Start the runtime. """
     opt_flags_arg = (options.disjoint_enabled, options.default_enabled,
                      options.integrate_enabled, options.multitable_enabled,
                      options.ragel_enabled, options.partition_enabled,
                      options.switch_cnt, options.cache_enabled,
                      options.edge_contraction_enabled)
-    runtime = Runtime(Backend(),pol,path_main,kwargs,
+    runtime = Runtime(Backend(),main,path_main,kwargs,
                       mode=options.mode, verbosity=options.verbosity,
                       opt_flags=opt_flags_arg, use_nx=options.nx,
                       pipeline=options.pipeline,
                       use_pyretic=options.use_pyretic)
 
-    # This is our VisConcreteNetwork
-    network = runtime.network
-
-    # Every packet through the network will be pushed to the handle_pkt function
-    fwd.register_callback(network.handle_pkt)
-    network.register_bucket(cb)
-    network.register_policy(given_pol)
-
     """ Start pox backend. """
     if not options.frontend_only:
+        try:
+            output = subprocess.check_output('echo $PYTHONPATH',shell=True).strip()
+        except:
+            print 'Error: Unable to obtain PYTHONPATH'
+            sys.exit(1)
+        poxpath = None
+        for p in output.split(':'):
+             if re.match('.*pox/?$',p):
+                 poxpath = os.path.abspath(p)
+                 break
+        if poxpath is None:
+            poxpath = 'pox'
         pox_exec = os.path.join('pox','pox.py')
         python=sys.executable
         # TODO(josh): pipe pox_client stdout to subprocess.PIPE or
@@ -325,16 +288,6 @@ def main():
                                      stdout=sys.stdout,
                                      stderr=subprocess.STDOUT,
                                      env=myenv)
-
-    """ http server for visualization """
-    HandlerClass = SimpleHTTPRequestHandler
-    ServerClass  = BaseHTTPServer.HTTPServer
-    Protocol     = "HTTP/1.0"
-    server_addr  = ('0.0.0.0', 8000)
-
-    HandlerClass.protocol_version = Protocol
-    vis_server = ServerClass(server_addr, HandlerClass)
-    threading.Thread(target=vis_server.serve_forever).start()
 
     """ Profiling. """
     if options.enable_profile:
