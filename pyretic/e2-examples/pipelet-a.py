@@ -45,7 +45,7 @@ n = net.addSwitch('s3', mac='00:00:00:00:00:03')
 f = net.addSwitch('s4', mac='00:00:00:00:00:04')
 external = net.addSwitch('s5', mac='00:00:00:00:00:05')
 internal_host = net.addHost('h1', mac='00:00:00:00:00:06')
-external_host = net.addHost('h2', mac='00:00:00:00:00:08')
+external_host = net.addHost('h2', mac='00:00:00:00:00:07')
 
 # Add links
 net.addLink(internal_host, internal)
@@ -69,18 +69,23 @@ external_nf = E2NF("s5", 1)
 fifa = E2Pipelet("pipelet-a")
 fifa.add_nodes_from([internal_nf, p_nf, n_nf, f_nf, external_nf])
 fifa.add_edges_from([(internal_nf, p_nf, {'filter': match(dstport = 8000)}),
-    (internal_nf, n_nf, {'filter': ~match(dstport = 7000)}),
+	(p_nf, internal_nf, {'filter': match(srcport = 8000)}),
+    (internal_nf, n_nf, {'filter': match(dstport = 7000)}),
+    (n_nf, internal_nf, {'filter': match(srcport = 7000)}),
     (p_nf, n_nf, {'filter': match(dstport = 8000)}),
-    (n_nf, f_nf, {'filter': match()}),
-    (f_nf, external_nf, {'filter': match(dstport = 8000)})])
+    (n_nf, p_nf, {'filter': match(srcport = 8000)}),
+    (n_nf, f_nf, {'filter': (match(dstport = 8000) + match(dstport = 7000))}),
+    (f_nf, n_nf, {'filter': match(srcport = 8000)}),
+    (f_nf, external_nf, {'filter': match(dstport = 8000)}),
+    (external_nf, f_nf, {'filter': match(srcport = 8000)})])
 
 # all_pids_to_stop = []
 dest = LoadGenerator.dest(8000)
 src_s1 = LoadGenerator.src(external_host.IP(), 8000, 1000)
-src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1000)
+# src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1000)
 internal_host.cmd(src_s1 + " &")
 # all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
-internal_host.cmd(src_s2 + " &")
+# internal_host.cmd(src_s2 + " &")
 # all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
 external_host.cmd(dest + " &")
 # all_pids_to_stop.append(int(internal_host.cmd('echo $!')))

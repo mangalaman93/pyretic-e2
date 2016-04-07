@@ -15,21 +15,47 @@ class e2():
         nodedict = {}
         interfaces = {}
         port = {}
+        policy = None
+        ipmap = {}
+
         for s in self.net.switches:
             port[s.name] = s.dpid
 
+        for host in self.net.hosts:
+            ipmap[host.name] = host.IP()
+
+        print self.net.links
         for link in self.net.links:
+            pos = link.intf1.name.split("-")[1].rindex("h") + 1
+            # if it is a host link
+            if link.intf1.name.split("-")[0][0] == 'h':
+                host = link.intf1.name.split("-")[0]
+                rule = (match(switch = int(port[link.intf2.name.split("-")[0]]), dstip=ipmap[host]) >> fwd(int(link.intf2.name.split("-")[1][pos:])))
+                if policy is None:
+                    policy = rule
+                else:
+                    policy += rule
+
+            if link.intf2.name.split("-")[0][0] == 'h':
+                host = link.intf2.name.split("-")[0]
+                rule = (match(switch = int(port[link.intf1.name.split("-")[0]]), dstip=ipmap[host]) >> fwd(int(link.intf1.name.split("-")[1][pos:])))
+                if policy is None:
+                    policy = rule
+                else:
+                    policy += rule
+
             if link.intf1.name.split("-")[0] not in interfaces:
                 interfaces[link.intf1.name.split("-")[0]] = {}
-            pos = link.intf1.name.split("-")[1].rindex("h") + 1
+            if link.intf2.name.split("-")[0] not in interfaces:
+                interfaces[link.intf2.name.split("-")[0]] = {}
             interfaces[link.intf1.name.split("-")[0]][link.intf2.name.split("-")[0]] = link.intf1.name.split("-")[1][pos:]
+            interfaces[link.intf2.name.split("-")[0]][link.intf1.name.split("-")[0]] = link.intf2.name.split("-")[1][pos:]
 
         for edge in self.pipelets.edges(data=True):
              if edge[0].name not in nodedict:
                 nodedict[edge[0].name] = []
              nodedict[edge[0].name].append(edge)
 
-        policy = None
         for sw in port.keys():
             route  = None
             if sw in nodedict:
