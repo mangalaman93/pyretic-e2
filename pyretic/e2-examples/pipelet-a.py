@@ -5,12 +5,9 @@
 from pyretic.e2.lg import *
 from pyretic.e2.pipelet import *
 from pyretic.e2.e2 import *
-from mininet.topo import Topo
 from mininet.net import Mininet
-from mininet.node import Controller, RemoteController, OVSKernelSwitch, UserSwitch
-from mininet.cli import CLI
-from mininet.log import setLogLevel
-from mininet.link import Link, TCLink
+from mininet.node import RemoteController, OVSKernelSwitch
+from mininet.link import TCLink
 
 # Example taken from E2 paper 15(a)
 #
@@ -36,7 +33,10 @@ from mininet.link import Link, TCLink
 #       +--------+   +------+
 #
 
-net = Mininet(controller=RemoteController, link=TCLink, switch=OVSKernelSwitch)
+net = Mininet(controller=RemoteController,
+              link=TCLink,
+              switch=OVSKernelSwitch,
+              autoStaticArp=True)
 
 # Add hosts and switches
 internal = net.addSwitch('s1', mac='00:00:00:00:00:01')
@@ -45,7 +45,7 @@ n = net.addSwitch('s3', mac='00:00:00:00:00:03')
 f = net.addSwitch('s4', mac='00:00:00:00:00:04')
 external = net.addSwitch('s5', mac='00:00:00:00:00:05')
 internal_host = net.addHost('h1', mac='00:00:00:00:00:06')
-external_host = net.addHost('h2', mac='00:00:00:00:00:07')
+external_host = net.addHost('h2', mac='00:00:00:00:00:08')
 
 # Add links
 net.addLink(internal_host, internal)
@@ -76,8 +76,8 @@ fifa.add_edges_from([(internal_nf, p_nf, {'filter': match(dstport = 8000)}),
 
 # all_pids_to_stop = []
 dest = LoadGenerator.dest(8000)
-src_s1 = LoadGenerator.src(external_host.IP(), 8000, 1)
-src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1)
+src_s1 = LoadGenerator.src(external_host.IP(), 8000, 1000)
+src_s2 = LoadGenerator.src(external_host.IP(), 7000, 1000)
 internal_host.cmd(src_s1 + " &")
 # all_pids_to_stop.append(int(internal_host.cmd('echo $!')))
 internal_host.cmd(src_s2 + " &")

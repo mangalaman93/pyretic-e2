@@ -5,11 +5,6 @@
 """E2 implementation using pyreric and mininet"""
 from pyretic.lib.corelib import *
 from pyretic.lib.std import *
-from mininet.topo import Topo
-from mininet.net import Mininet
-from mininet.node import Controller, RemoteController, OVSKernelSwitch, UserSwitch
-from mininet.cli import CLI
-from mininet.link import Link, TCLink
 
 class e2():
     def __init__(self, net, pipelets):
@@ -40,11 +35,11 @@ class e2():
             if sw in nodedict:
                 for rule in nodedict[sw]:
                     if route is None:
-                        route = rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name])
+                        route = (rule[2]['filter'] >> fwd(int(interfaces[sw][rule[1].name])))
                     else:
-                        route = route + (rule[2]['filter'] >> fwd(interfaces[sw][rule[1].name]))
+                        route = route + (rule[2]['filter'] >> fwd(int(interfaces[sw][rule[1].name])))
                 if policy is None:
-                    policy = (match(switch = port[sw]) >> route)
+                    policy = (match(switch = int(port[sw])) >> route)
                 else:
-                    policy += (match(switch = port[sw]) >> route)
+                    policy += (match(switch = int(port[sw])) >> route)
         return policy
