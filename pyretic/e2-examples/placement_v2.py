@@ -116,26 +116,37 @@ def bin_pack(igraph,pipelets_sources,bin_capacity):
                 pass
             else:
                 node_list.append(edge[1])
+    bin_full = 0
+    bin_num = 0 
+    cap_sum = 0         
+    for node in node_list:
+        cap_sum = cap_sum + node.nf_capacity
+        if cap_sum <= bin_capacity:
+            node.switch_placed = "s"+str(bin_num)
+            print node.switch_placed,node.node_id,node.nf_capacity
+        else:     
+            cap_sum = node.nf_capacity
+            bin_num =bin_num + 1
+            node.switch_placed = "s"+str(bin_num)
+            print node.switch_placed,node.node_id,node.nf_capacity
+ 
 
-    cap_sum=0
+
+"""    cap_sum=0
     bin_num=0
     for node in node_list:
         #bin_num = cap_sum/bin_capacity
         cap_sum = cap_sum + node.nf_capacity
-        if cap_sum<bin_capacity:
-
+        if cap_sum<(bin_num+1)*bin_capacity:
             node.switch_placed = "s"+str(bin_num)
+            print "ifless",node.switch_placed,node.node_id,node.nf_capacity
         else:
             bin_num =bin_num + 1
             node.switch_placed = "s"+str(bin_num)
-            print "if",node.switch_placed,node.node_id,node.nf_capacity
-            if bin_capacity-node.nf_capacity:
-            cap_sum=0
-            #if node.nf_capacity==bin_capacity:
-            #   bin_num+=1
+            print "else",node.switch_placed,node.node_id,node.nf_capacity
     #for n in igraph.nodes():
     #    print n.node_id,n.switch_placed,n.nf_capacity
-
+"""
 
 def calc_instances(pgraph,pipelets_sources):
     number_of_instances= dict()
@@ -303,6 +314,7 @@ g1 = merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5])
 g2 = create_igraph(g1,[source1,source2,source3,source4,source5])
 #g2 = calc_instances(g1,[source1,source2,source3,source4,source5])
 bin_pack(g2,[source1,source2,source3,source4,source5],10)
+
 
 
 
