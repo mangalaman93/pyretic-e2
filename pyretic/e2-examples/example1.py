@@ -146,7 +146,7 @@ def main():
   print(pgraph.nodes())
   print(pgraph.edges())
   
-  pdb.set_trace()
+  # pdb.set_trace()
   
   igraph= e2_main.create_igraph([source1, source2, source3, source4, source5, dest1, dest2], pgraph)
   print "==============IGRAPH==============="
