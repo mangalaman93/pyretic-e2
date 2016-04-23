@@ -14,6 +14,7 @@ class E2NF(object):
         self.nf_capacity=nf_capacity
         self.inp_load_estimate= inp_load_estimate
         self.switch_placed = switch_placed
+        self.other = None
 
     def __hash__(self):
         return self.name.__hash__()
