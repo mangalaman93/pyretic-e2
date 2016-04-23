@@ -152,6 +152,7 @@ class e2():
         list_of_srcs= list(pipelets_sources)
         node_list=[]
         print "Sources", list_of_srcs
+        print "Nodes", igraph.nodes()
         for src in list_of_srcs:
             print "DFS EDGES", list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
