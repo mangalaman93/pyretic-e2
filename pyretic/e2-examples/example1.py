@@ -144,17 +144,17 @@ def main():
   print "==============PGRAPH==============="
  
   print(pgraph.nodes())
-  print(pgraph.edges())
+  print(pgraph.edges(data=True))
   
   # pdb.set_trace()
   
   igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
   print "==============IGRAPH==============="
-  print(igraph.nodes())
-  print(igraph.edges())
+  #print(igraph.nodes())
+  #print(igraph.edges())
 
   print "==============BIN PACKING==============="
-  new_igraph = e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
+  #new_igraph = e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
   
   print "==============UPDATE PIPELETS==============="
-  e2_main.update_pipelets(new_igraph)
+  #e2_main.update_pipelets(new_igraph)
