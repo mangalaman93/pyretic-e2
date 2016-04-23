@@ -170,7 +170,7 @@ class e2():
             
             print "DFS Edges:", list(nx.dfs_edges(pgraph, src))
             
-            for edge in nx.dfs_edges(pgraph, src):
+            for edge in list(nx.dfs_edges(pgraph, src)):
                 node1 = edge[0]
                 node2 = edge[1]
                 print "Nodes:", node1, node2
