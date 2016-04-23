@@ -24,7 +24,7 @@ class E2NF(object):
     def __repr__(self):
         return self.__str__()
 
-class E2Pipelet(nx.DiGraph):
+class E2Pipelet(nx.Graph):
     """E2 Pipelet defining end to end flow"""
     def __init__(self, name):
         super(E2Pipelet, self).__init__()
