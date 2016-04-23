@@ -13,7 +13,7 @@ class E2NF(object):
         self.node_id = node_id
         self.nf_capacity=nf_capacity
         self.inp_load_estimate= inp_load_estimate
-        self.switch_placed = switch_
+        self.switch_placed = switch_placed
 
     def __hash__(self):
         return self.name.__hash__()
