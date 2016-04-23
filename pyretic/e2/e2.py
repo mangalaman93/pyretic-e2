@@ -156,7 +156,6 @@ class e2():
         switches_places = {}
         
         node_list=[]
-        print "Sources", list_of_srcs
         print "Nodes", igraph.nodes()
         print "Edges", igraph.edges()
 
