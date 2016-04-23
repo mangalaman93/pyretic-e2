@@ -125,7 +125,7 @@ class e2():
         
         igraph = E2Pipelet('igraph')
         #igraph.add_nodes_from(pgraph.nodes())
- 	    igraph.add_nodes_from(sources)
+        igraph.add_nodes_from(sources)
         igraph.add_nodes_from(dest)
         igraph.add_nodes_from([NF1_1, NF2_1, NF1_2, NF2_2, NF3_1, NF3_2, NF3_3, NF3_4, NF3_5])
 
