@@ -3,6 +3,8 @@
 ##########################################################
 
 """E2 implementation using pyreric and mininet"""
+from pyretic.e2.pipelet import *
+from pyretic.e2.e2 import *
 from pyretic.lib.corelib import *
 from pyretic.lib.std import *
 
