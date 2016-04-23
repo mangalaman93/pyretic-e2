@@ -126,14 +126,21 @@ class e2():
         igraph.add_edge(source1,NF1_2,{'filter':'r1'})
         igraph.add_edge(source2,NF1,{'filter':'r4'})
         igraph.add_edge(source3,NF2,{'filter':'r4'})
-
         igraph.add_edge(source4,NF2,{'filter':'r4'})
         igraph.add_edge(source5,NF2_2,{'filter':'r4'})
+        
         igraph.add_edge(NF1_2,NF3,{'filter':'r2'})
         igraph.add_edge(NF1,NF3_2,{'filter':'r5'})
         igraph.add_edge(NF2,NF3_3,{'filter':'r5'})
         igraph.add_edge(NF2,NF3_4,{'filter':'r5'})
         igraph.add_edge(NF2_2,NF3_5,{'filter':'r5'})
+        
+        igraph.add_edge(NF3,dest1,{'filter':'r4'})
+        igraph.add_edge(NF3_2, dest1, {'filter':'r4'})
+        igraph.add_edge(NF3_3, dest2,{'filter':'r2'})
+        igraph.add_edge(NF3_4, dest2,{'filter':'r5'})
+        igraph.add_edge(NF3_5,dest1,{'filter':'r5'})
+        
         return igraph
     
     def bin_pack(self, igraph,pipelets_sources,bin_capacity):
