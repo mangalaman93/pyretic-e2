@@ -66,7 +66,7 @@ def main():
               switch=OVSKernelSwitch,
               autoStaticArp=True)
     e2_main = e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]])
-    pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5])
+    pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5], "pgraph1")
     print(pgraph.nodes())
     print(pgraph.edges())
     print pgraph
