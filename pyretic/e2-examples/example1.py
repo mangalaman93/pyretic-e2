@@ -8,7 +8,7 @@ from pyretic.e2.e2 import *
 from mininet.net import Mininet
 from mininet.node import RemoteController, OVSKernelSwitch
 from mininet.link import TCLink
-
+import pdb
 
 ##loads generated
 l1 = 4
@@ -144,14 +144,9 @@ def main():
   print "==============PGRAPH==============="
  
   print(pgraph.nodes())
-  
-  for n in pgraph.nodes():
-    if n == source1:
-      print "Yeay!"
-    else:
-      print "Nope"
-  
   print(pgraph.edges())
+  
+  pdb.set_trace()
   
   igraph= e2_main.create_igraph([source1, source2, source3, source4, source5, dest1, dest2], pgraph)
   print "==============IGRAPH==============="
