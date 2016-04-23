@@ -150,5 +150,6 @@ def main():
   print(igraph.nodes())
   print(igraph.edges())
 
+  print "==============BIN PACKING==============="
   e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
   
