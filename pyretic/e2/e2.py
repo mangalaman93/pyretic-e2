@@ -172,6 +172,8 @@ class e2():
         cap_sum = 0  
         print "Node list", node_list
         for node in node_list:
+            if node.name[0]=='d':
+                continue
             print node
             cap_sum = cap_sum + node.nf_capacity
             if cap_sum <= bin_capacity:
