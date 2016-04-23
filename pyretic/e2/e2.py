@@ -81,7 +81,7 @@ class e2():
             if i==0:
                 pgraph = pipelets_list[i]
             else:
-                pgraph= nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]))
+                pgraph = nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]), "pgraph")
 
         return pgraph
     
