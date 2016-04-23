@@ -73,7 +73,7 @@ class e2():
                     policy += (match(switch = int(port[sw])) >> route)
         return policy
 
-    def merge_pipelets(pipelets_list):
+    def merge_pipelets(self, pipelets_list):
         """
         function to get pgraph
         """
@@ -85,7 +85,7 @@ class e2():
 
         return pgraph
     
-    def create_igraph(pgraph,pipelets_sources):
+    def create_igraph(self, pgraph,pipelets_sources):
         """
         function to get igraph
         """
@@ -112,7 +112,7 @@ class e2():
         igraph.add_edge(NF2_2,NF3_5,{'filter':'r5'})
         return igraph
     
-    def bin_pack(igraph,pipelets_sources,bin_capacity):
+    def bin_pack(self, igraph,pipelets_sources,bin_capacity):
         """
         function to bin pack the NF instances
         """
