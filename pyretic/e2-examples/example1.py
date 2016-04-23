@@ -107,7 +107,7 @@ pipe3 = E2Pipelet("pipelet-3")
 pipe3.add_nodes_from([source3, NF2, NF3, dest2])
 pipe3.add_edges_from([
     (source3, NF2, {'filter': match(srcport = 8000)}),
-    (NF2, NF3, {'filter':match(srcport = 8000)}),
+    (NF2, NF3, {'filter':match(srcport = 6000)}),
     (NF3, dest2, {'filter': match(srcport = 8000)}),
     (NF2, source3, {'filter': match(dstport = 8000)}),
     (NF3, NF2, {'filter': match(dstport = 8000)}),
@@ -118,7 +118,7 @@ pipe4 = E2Pipelet("pipelet-4")
 pipe4.add_nodes_from([source4, NF2, NF3, dest2])
 pipe4.add_edges_from([
     (source4, NF2,{'filter':match(srcport = 8000)}),
-    (NF2, NF3,{'filter':match(srcport = 8000)}),
+    (NF2, NF3,{'filter':match(srcport = 7000)}),
     (NF3, dest2,{'filter':match(srcport = 8000)}),
     (NF2, source4, {'filter':match(dstport = 8000)}),
     (NF3, NF2, {'filter':match(dstport = 8000)}),
@@ -129,7 +129,7 @@ pipe5 = E2Pipelet("pipelet-5")
 pipe5.add_nodes_from([source5, NF2, NF3, dest2])
 pipe5.add_edges_from([
     (source5, NF2,{'filter':match(srcport = 8000)}),
-    (NF2, NF3,{'filter':match(srcport = 8000)}),
+    (NF2, NF3,{'filter':match(srcport = 9000)}),
     (NF3, dest2,{'filter':match(srcport = 8000)}),
     (NF2, source5, {'filter':match(dstport = 8000)}),
     (NF3, NF2, {'filter':match(dstport = 8000)}),
@@ -140,16 +140,15 @@ def main():
   pipelets = [pipe1, pipe2, pipe3, pipe4, pipe5]
   e2_main = e2(net, pipelets)
   
-  pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print "==============PGRAPH==============="
- 
+  pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print(pgraph.nodes())
   print(pgraph.edges(data=True))
   
   # pdb.set_trace()
   
-  igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
   print "==============IGRAPH==============="
+  #igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
   #print(igraph.nodes())
   #print(igraph.edges())
 
