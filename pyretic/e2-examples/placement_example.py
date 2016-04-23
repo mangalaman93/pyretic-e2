@@ -67,10 +67,12 @@ def main():
               autoStaticArp=True)
     e2_main = e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]])
     pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5], "pgraph1")
-    print(pgraph.nodes())
-    print(pgraph.edges())
-    print pgraph
-    #igraph= e2.create_igraph(pgraph,[source1,source2,source3,source4,source5])
+    #print(pgraph.nodes())
+    #print(pgraph.edges())
+    #print pgraph
+    igraph= e2.create_igraph(pgraph,[source1,source2,source3,source4,source5])
+    print(igraph.nodes())
+    print(igraph.edges())
     #e2.bin_pack(iggraph,[source1,source2,source3,source4,source5],bin_capacity)
     something = 1
     return something
