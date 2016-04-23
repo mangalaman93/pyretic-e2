@@ -167,7 +167,13 @@ class e2():
         for src in pipelets_sources:
             # nf -> nf instance, keeps track of the assigned instance for this source
             current_instance = {}
+            
+            print "DFS Edges:", nx.dfs_edges(pgraph, src)
+            
             for (node1, node2) in nx.dfs_edges(pgraph, src):
+                
+                print "Nodes:", node1, node2
+                
                 if node1.node_id[:3] == 'src':
                     node2_instance = find_or_create_instance(node1.inp_load_estimate, node2)
                     update_igraph(igraph, node1, node2_instance)
