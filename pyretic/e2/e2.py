@@ -71,6 +71,9 @@ class e2():
         return policy
 
 	def merge_pipelets(pipelets_list):
+		"""
+		function to get pgraph
+		"""
 		for i in range(len(pipelets_list)):
 		    if i==0:
 		        pgraph = pipelets_list[i]
@@ -80,6 +83,9 @@ class e2():
 		return pgraph
 	
 	def create_igraph(pgraph,pipelets_sources):
+		"""
+		function to get igraph
+		"""
 		igraph = E2Pipelet('igraph')
 		igraph.add_nodes_from(pgraph.nodes())
 		NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
@@ -104,6 +110,9 @@ class e2():
 		return igraph
 	
 	def bin_pack(igraph,pipelets_sources,bin_capacity):
+		"""
+		function to bin pack the NF instances
+		"""
 		list_of_srcs= list(pipelets_sources)
 		node_list=[]
 		for src in list_of_srcs:
