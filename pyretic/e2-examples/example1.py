@@ -80,20 +80,6 @@ NF3 = E2NF("s7", 1, '3_1',nf_capacity=nfc3)
 dest1 = E2NF("h6", 1, 'dst1')
 dest2 = E2NF("h7", 1,'dst2')
 
-# adding filters
-fifa = E2Pipelet("pipelet-a")
-fifa.add_nodes_from([internal_nf, p_nf, n_nf, f_nf, external_nf])
-fifa.add_edges_from([(internal_nf, p_nf, {'filter': match(dstport = 8000)}),
-    (p_nf, internal_nf, {'filter': match(srcport = 8000)}),
-    (internal_nf, n_nf, {'filter': match(dstport = 7000)}),
-    (n_nf, internal_nf, {'filter': match(srcport = 7000)}),
-    (p_nf, n_nf, {'filter': match(dstport = 8000)}),
-    (n_nf, p_nf, {'filter': match(srcport = 8000)}),
-    (n_nf, f_nf, {'filter': (match(dstport = 8000) + match(dstport = 7000))}),
-    (f_nf, n_nf, {'filter': match(srcport = 8000)}),
-    (f_nf, external_nf, {'filter': match(dstport = 8000)}),
-    (external_nf, f_nf, {'filter': match(srcport = 8000)})])
-
 # create pipelets
 pipe1 = E2Pipelet("pipelet-1")
 pipe1.add_nodes_from([source1, NF1, NF3, dest1])
