@@ -73,7 +73,7 @@ class e2():
                     policy += (match(switch = int(port[sw])) >> route)
         return policy
 
-    def merge_pipelets(self, pipelets_list):
+    def merge_pipelets(self, pipelets_list, graph_name):
         """
         function to get pgraph
         """
@@ -83,7 +83,7 @@ class e2():
             else:
                 pgraph = nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]))
         
-        pgraph.name = "Pgraph"
+        pgraph.name = graph_name
         
         return pgraph
     
