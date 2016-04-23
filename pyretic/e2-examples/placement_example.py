@@ -1,4 +1,6 @@
 import  math
+from pyretic.e2.pipelet import *
+from pyretic.e2.e2 import *
 
 ##loads generated
 l1 = 4
