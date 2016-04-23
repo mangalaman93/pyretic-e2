@@ -153,6 +153,8 @@ class e2():
         node_list=[]
         print "Sources", list_of_srcs
         print "Nodes", igraph.nodes()
+        print "Edges", igraph.edges()
+
         for src in list_of_srcs:
             print "DFS EDGES", list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
