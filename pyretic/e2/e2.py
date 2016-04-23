@@ -69,3 +69,59 @@ class e2():
                 else:
                     policy += (match(switch = int(port[sw])) >> route)
         return policy
+
+	def merge_pipelets(pipelets_list):
+		for i in range(len(pipelets_list)):
+		    if i==0:
+		        pgraph = pipelets_list[i]
+		    else:
+		        pgraph= nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]))
+
+		return pgraph
+	
+	def create_igraph(pgraph,pipelets_sources):
+		igraph = E2Pipelet('igraph')
+		igraph.add_nodes_from(pgraph.nodes())
+		NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
+		NF2_2 = E2NF("s12", 1, '2_2',nf_capacity=nfc2)
+		NF3_2 = E2NF("s13", 1, '3_2',nf_capacity=nfc3)
+		NF3_3 = E2NF("s14", 1, '3_3',nf_capacity=nfc3)
+		NF3_4 = E2NF("s15", 1, '3_4',nf_capacity=nfc3)
+		NF3_5 = E2NF("s16", 1, '3_5',nf_capacity=nfc3)
+
+		igraph.add_nodes_from([NF1_2,NF2_2,NF3_2,NF3_3,NF3_4,NF3_5])
+		igraph.add_edge(source1,NF1_2,{'filter':'r1'})
+		igraph.add_edge(source2,NF1,{'filter':'r4'})
+		igraph.add_edge(source3,NF2,{'filter':'r4'})
+
+		igraph.add_edge(source4,NF2,{'filter':'r4'})
+		igraph.add_edge(source5,NF2_2,{'filter':'r4'})
+		igraph.add_edge(NF1_2,NF3,{'filter':'r2'})
+		igraph.add_edge(NF1,NF3_2,{'filter':'r5'})
+		igraph.add_edge(NF2,NF3_3,{'filter':'r5'})
+		igraph.add_edge(NF2,NF3_4,{'filter':'r5'})
+		igraph.add_edge(NF2_2,NF3_5,{'filter':'r5'})
+		return igraph
+	
+	def bin_pack(igraph,pipelets_sources,bin_capacity):
+		list_of_srcs= list(pipelets_sources)
+		node_list=[]
+		for src in list_of_srcs:
+		    for edge in nx.dfs_edges(igraph,src):
+		        if edge[1] in node_list:
+		            pass
+		        else:
+		            node_list.append(edge[1])
+		bin_full = 0
+		bin_num = 0 
+		cap_sum = 0         
+		for node in node_list:
+		    cap_sum = cap_sum + node.nf_capacity
+		    if cap_sum <= bin_capacity:
+		        node.switch_placed = "s"+str(bin_num)
+		        print node.switch_placed,node.node_id,node.nf_capacity
+		    else:     
+		        cap_sum = node.nf_capacity
+		        bin_num =bin_num + 1
+		        node.switch_placed = "s"+str(bin_num)
+		        print node.switch_placed,node.node_id,node.nf_capacity
