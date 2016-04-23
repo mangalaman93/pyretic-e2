@@ -121,7 +121,11 @@ class e2():
                 node.switch_placed = "s"+str(bin_num)
                 print node.switch_placed,node.node_id,node.nf_capacity
         return igraph
-    
+
+    # helper function for creating igraph
+    # either finds an existing instance for the given amount of load
+    #     or creates a new instance of the given network function
+    #     it used E2NF.other variable to keep track of instances that it creates
     def find_or_create_instance(load, nf):
         if nf.other:
             for instance in nf.other:
@@ -135,11 +139,14 @@ class e2():
             nf_capacity=nf.nf_capacity, inp_load_estimate=load)
         nf.other.append(instance)
         return instance
-    
+
+    # helper function for creating igraph
+    # annotates the edge with correct filters and adds the edge (and hence nodes)
+    #  to the given igraph
     def update_igraph(igraph, node1_instance, node2_instance):
         # TODO - add filter
         igraph.add_edge(node1_instance, node2_instance)
-    
+
     def should_I_add_an_edge_to_dest_from_src(self, src, dest):
         for pipelet in self.pipelets:
             count = 0
@@ -158,7 +165,7 @@ class e2():
     def create_igraph(self, pgraph, pipelets_sources):
         igraph = E2Pipelet('igraph')
         for src in pipelets_sources:
-            # nf -> nf instance
+            # nf -> nf instance, keeps track of the assigned instance for this source
             current_instance = {}
             for (node1, node2) in nx.dfs_edges(pgraph, src):
                 if node1.node_id[:3] == 'src':
