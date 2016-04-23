@@ -147,6 +147,7 @@ class e2():
         """
         function to bin pack the NF instances
         """
+        switches_places = {}
         list_of_srcs= list(pipelets_sources)
         node_list=[]
         for src in list_of_srcs:
