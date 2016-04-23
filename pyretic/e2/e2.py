@@ -174,7 +174,6 @@ class e2():
         for node in node_list:
             if node.node_id[0]=='d':
                 continue
-            print node
             cap_sum = cap_sum + node.nf_capacity
             if cap_sum <= bin_capacity:
                 node.switch_placed = "s"+str(bin_num)
