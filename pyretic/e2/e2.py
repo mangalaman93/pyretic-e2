@@ -156,7 +156,7 @@ class e2():
         print "Edges", igraph.edges()
 
         for src in list_of_srcs:
-            print "DFS EDGES", list(nx.dfs_edges(igraph,src))
+            print "DFS EDGES", src, list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
                 print  "Edge", edge
                 if edge[1] in node_list:
