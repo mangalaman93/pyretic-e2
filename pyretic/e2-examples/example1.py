@@ -142,7 +142,15 @@ def main():
   
   pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print "==============PGRAPH==============="
+ 
   print(pgraph.nodes())
+  
+  for n in pgraph.nodes():
+    if n == source1:
+      print "Yeay!"
+    else:
+      print "Nope"
+  
   print(pgraph.edges())
   
   igraph= e2_main.create_igraph([source1, source2, source3, source4, source5, dest1, dest2], pgraph)
