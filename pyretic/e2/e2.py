@@ -159,7 +159,8 @@ class e2():
                     node_list.append(edge[1])
         bin_full = 0
         bin_num = 0 
-        cap_sum = 0         
+        cap_sum = 0  
+        print "Node list", node_list
         for node in node_list:
             print node
             cap_sum = cap_sum + node.nf_capacity
