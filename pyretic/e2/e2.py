@@ -168,7 +168,7 @@ class e2():
             # nf -> nf instance, keeps track of the assigned instance for this source
             current_instance = {}
             
-            print "DFS Edges:", nx.dfs_edges(pgraph, src)
+            print "DFS Edges:", list(nx.dfs_edges(pgraph, src))
             
             for (node1, node2) in nx.dfs_edges(pgraph, src):
                 
