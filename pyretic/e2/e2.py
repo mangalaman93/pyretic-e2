@@ -151,7 +151,9 @@ class e2():
         switches_places = {}
         list_of_srcs= list(pipelets_sources)
         node_list=[]
+        print "Sources", list_of_srcs
         for src in list_of_srcs:
+            print "DFS EDGES", nx.dfs_edges(igraph,src)
             for edge in nx.dfs_edges(igraph,src):
                 if edge[1] in node_list:
                     pass
