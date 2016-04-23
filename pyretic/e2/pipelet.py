@@ -26,6 +26,6 @@ class E2NF(object):
 
 class E2Pipelet(nx.Graph):
     """E2 Pipelet defining end to end flow"""
-    def __init__(self, name):
+    def __init__(self, name=None):
         super(E2Pipelet, self).__init__()
         self.name = name
