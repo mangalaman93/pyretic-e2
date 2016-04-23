@@ -82,71 +82,8 @@ class e2():
                 pgraph = pipelets_list[i]
             else:
                 pgraph = nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]))
-        
         pgraph.name = graph_name
-        
         return pgraph
-    
-    def create_igraph(self, hosts, pgraph):
-        """
-        function to get igraph
-        """
-        l1 = 4
-        l2 = 4
-        l3 = 4
-        l4 = 4
-        l5 = 4
-        nfc1 = 5
-        nfc2 = 10
-        nfc3 = 4
-        
-        bin_capacity = 10
-        # creating NFs,sources,dests
-        source1 = hosts[0]
-        source2 = hosts[1]
-        source3 = hosts[2]
-        source4 = hosts[3]
-        source5 = hosts[4]
-        
-        dest1 = hosts[5]
-        dest2 = hosts[6]
-        
-        NF1_1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
-        NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
-        
-        NF2_1 = E2NF("s7", 1, '2_1',nf_capacity=nfc2)
-        NF2_2 = E2NF("s12", 1, '2_2',nf_capacity=nfc2)
-       
-        NF3_1 = E2NF("s8", 1, '3_1',nf_capacity=nfc3)
-        NF3_2 = E2NF("s13", 1, '3_2',nf_capacity=nfc3)
-        NF3_3 = E2NF("s14", 1, '3_3',nf_capacity=nfc3)
-        NF3_4 = E2NF("s15", 1, '3_4',nf_capacity=nfc3)
-        NF3_5 = E2NF("s16", 1, '3_5',nf_capacity=nfc3)
-        
-        igraph = E2Pipelet('igraph')
-        #igraph.add_nodes_from(pgraph.nodes())
-        igraph.add_nodes_from(hosts)
-        igraph.add_nodes_from([NF1_1, NF2_1, NF1_2, NF2_2, NF3_1, NF3_2, NF3_3, NF3_4, NF3_5])
-
-        igraph.add_edge(source1,NF1_2,{'filter':'r1'})
-        igraph.add_edge(source2,NF1_1,{'filter':'r4'})
-        igraph.add_edge(source3,NF2_1,{'filter':'r4'})
-        igraph.add_edge(source4,NF2_1,{'filter':'r4'})
-        igraph.add_edge(source5,NF2_2,{'filter':'r4'})
-        
-        igraph.add_edge(NF1_2,NF3_1,{'filter':'r2'})
-        igraph.add_edge(NF1_1,NF3_2,{'filter':'r5'})
-        igraph.add_edge(NF2_1,NF3_3,{'filter':'r5'})
-        igraph.add_edge(NF2_1,NF3_4,{'filter':'r5'})
-        igraph.add_edge(NF2_2,NF3_5,{'filter':'r5'})
-        
-        igraph.add_edge(NF3_1,dest1,{'filter':'r4'})
-        igraph.add_edge(NF3_2, dest1, {'filter':'r4'})
-        igraph.add_edge(NF3_3, dest2,{'filter':'r2'})
-        igraph.add_edge(NF3_4, dest2,{'filter':'r5'})
-        igraph.add_edge(NF3_5,dest1,{'filter':'r5'})
-        
-        return igraph
     
     def bin_pack(self, igraph, sources, bin_capacity):
         """
@@ -183,15 +120,69 @@ class e2():
                 bin_num =bin_num + 1
                 node.switch_placed = "s"+str(bin_num)
                 print node.switch_placed,node.node_id,node.nf_capacity
-        
-        #print igraph.nodes()
-        
+        return igraph
+    
+    def find_or_create_instance(load, nf):
+        if nf.other:
+            for instance in nf.other:
+                if instance.nf_capacity >= (load + instance.inp_load_estimate):
+                    instance.inp_load_estimate += load
+                    return instance
+        else:
+            nf.other = []
+        num = len(nf.other) + 1
+        instance = E2NF(nf.name, num, nf.node_id+"_"+str(num),
+            nf_capacity=nf.nf_capacity, inp_load_estimate=load)
+        nf.other.append(instance)
+        return instance
+    
+    def update_igraph(igraph, node1_instance, node2_instance):
+        # TODO - add filter
+        igraph.add_edge(node1_instance, node2_instance)
+    
+    def should_I_add_an_edge_to_dest_from_src(self, src, dest):
+        for pipelet in self.pipelets:
+            count = 0
+            for (n1, n2) in pipelet.edges():
+                if n1 == src:
+                    count += 1
+                elif n2 == dest:
+                    count += 1
+            if count == 2:
+                return True
+        return False
+    
+    # Assumptions - one instance can handle all the load from one source
+    # - source and destination are never connected directly
+    # - source nodes are named with prefix "src" without quotes
+    def create_igraph(self, pgraph, pipelets_sources):
+        igraph = E2Pipelet('igraph')
+        for src in pipelets_sources:
+            # nf -> nf instance
+            current_instance = {}
+            for (node1, node2) in nx.dfs_edges(pgraph, src):
+                if node1.node_id[:3] == 'src':
+                    node2_instance = find_or_create_instance(node1.inp_load_estimate, node2)
+                    update_igraph(igraph, node1, node2_instance)
+                    assert not (node2 in current_instance)
+                    current_instance[node2] = node2_instance
+                elif node2.node_id[:3] == 'dst':
+                    if self.should_I_add_an_edge_to_dest_from_src(src, node2):
+                        node1_instance = current_instance[node1]
+                        update_igraph(igraph, node1_instance, node2)
+                else:
+                    node1_instance = current_instance[node1]
+                    load = node1_instance.inp_load_estimate
+                    node2_instance = find_or_create_instance(load, node2)
+                    update_igraph(igraph, node1_instance, node2_instance)
+                    assert not (node2 in current_instance)
+                    current_instance[node2] = node2_instance
+        # print list(igraph.edges())
         return igraph
 
     def update_pipelets(self, igraph):
         print "update pipelets"
         print type(igraph)
         print igraph.nodes()
-        
         graphs = list(nx.connected_component_subgraphs(igraph))
         print graphs
