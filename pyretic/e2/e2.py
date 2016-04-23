@@ -184,3 +184,4 @@ class e2():
                 bin_num =bin_num + 1
                 node.switch_placed = "s"+str(bin_num)
                 print node.switch_placed,node.node_id,node.nf_capacity
+        print igraph.nodes()
