@@ -17,6 +17,12 @@ class E2NF(object):
 
     def __hash__(self):
         return self.name.__hash__()
+        
+    def __str__(self):
+        return self.name + " " + self.node_id
+        
+    def __repr__(self):
+        print self.__str__()
 
 class E2Pipelet(nx.DiGraph):
     """E2 Pipelet defining end to end flow"""
