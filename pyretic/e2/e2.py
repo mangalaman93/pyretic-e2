@@ -143,7 +143,7 @@ class e2():
         
         return igraph
     
-    def bin_pack(self, igraph,pipelets_sources,bin_capacity):
+    def bin_pack(self, igraph, pipelets_sources, bin_capacity):
         """
         function to bin pack the NF instances
         """
@@ -153,9 +153,9 @@ class e2():
         node_list=[]
         print "Sources", list_of_srcs
         for src in list_of_srcs:
-            print "DFS EDGES", nx.dfs_edges(igraph,src)
+            print "DFS EDGES", list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
-                print  "Edge",edge
+                print  "Edge", edge
                 if edge[1] in node_list:
                     pass
                 else:
