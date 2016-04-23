@@ -99,6 +99,20 @@ class e2():
         nfc1 = 5
         nfc2 = 10
         nfc3 = 4
+        
+        bin_capacity = 10
+        # creating NFs,sources,dests
+        source1 = E2NF("s1", 1,'src1',inp_load_estimate=l1)
+        source2 = E2NF("s2", 1,'src2',inp_load_estimate=l2)
+        source3 = E2NF("s3", 1,'src3',inp_load_estimate=l3)
+        source4 = E2NF("s4", 1,'src4',inp_load_estimate=l4)
+        source5 = E2NF("s5", 1,'src5',inp_load_estimate=l5)
+        
+        NF1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
+        NF2 = E2NF("s7", 1, '2_1',nf_capacity=nfc2)
+        NF3 = E2NF("s8", 1, '3_1',nf_capacity=nfc3)
+        dest1 = E2NF("s9", 1, 'dst1')
+        dest2 = E2NF("s10", 1,'dst2')
         igraph = E2Pipelet('igraph')
         igraph.add_nodes_from(pgraph.nodes())
         NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
