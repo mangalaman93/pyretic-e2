@@ -11,7 +11,7 @@ from pyretic.lib.std import *
 class e2():
     def __init__(self, net, pipelets):
         self.net = net
-        self.pipelets = pipelets[0]
+        self.pipelets = pipelets
 
     def policy(self):
         nodedict = {}
