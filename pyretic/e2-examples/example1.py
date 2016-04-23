@@ -108,15 +108,25 @@ pipe1.add_edges_from([
 
 pipe2 = E2Pipelet("pipelet-2")
 pipe2.add_nodes_from([source2, NF1, NF3, dest1])
-pipe2.add_edges_from([(source2, NF1,{'filter':'r4'}),
-    (NF1, NF3,{'filter':'r5'}),
-    (NF3, dest1,{'filter':'r6'} )])
+pipe2.add_edges_from([
+    (source2, NF1, {'filter': match(srcport = 80)}),
+    (NF1, NF3, {'filter':match(srcport = 80)}),
+    (NF3, dest1, {'filter': match(srcport = 80)}),
+    (NF1, source2, {'filter': match(dstport = 80)}),
+    (NF3, NF1, {'filter': match(dstport = 80)}),
+    (dest2, NF3, {'filter': match(dstport = 80)}),
+    ])
 
 pipe3 = E2Pipelet("pipelet-3")
 pipe3.add_nodes_from([source3, NF2, NF3, dest2])
-pipe3.add_edges_from([(source3, NF2,{'filter':'r4'}),
-    (NF2, NF3,{'filter':'r5'}),
-    (NF3, dest2,{'filter':'r6'} )])
+pipe2.add_edges_from([
+    (source3, NF2, {'filter': match(srcport = 8000)}),
+    (NF2, NF3, {'filter':match(srcport = 8000)}),
+    (NF3, dest2, {'filter': match(srcport = 8000)}),
+    (NF2, source3, {'filter': match(dstport = 8000)}),
+    (NF3, NF2, {'filter': match(dstport = 8000)}),
+    (dest2, NF3, {'filter': match(dstport = 8000)}),
+    ])
 
 pipe4 = E2Pipelet("pipelet-4")
 pipe4.add_nodes_from([source4, NF2, NF3, dest2])
@@ -140,5 +150,6 @@ pipe5.add_edges_from([
     (NF3, NF2, {'filter':match(dstport = 8000)}),
     (dest2, NF3,{'filter':match(dstport = 8000)}
     ])
+    
 def main():
     return e2(net, [fifa]).policy()
