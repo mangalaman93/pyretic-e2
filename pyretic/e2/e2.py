@@ -91,6 +91,14 @@ class e2():
         """
         function to get igraph
         """
+        l1 = 4
+        l2 = 4
+        l3 = 4
+        l4 = 4
+        l5 = 4
+        nfc1 = 5
+        nfc2 = 10
+        nfc3 = 4
         igraph = E2Pipelet('igraph')
         igraph.add_nodes_from(pgraph.nodes())
         NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
