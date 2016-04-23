@@ -1,7 +1,10 @@
 import  math
 from pyretic.e2.pipelet import *
 from pyretic.e2.e2 import *
-
+from mininet.net import Mininet
+from mininet.node import RemoteController, OVSKernelSwitch
+from mininet.link import TCLink
+              
 ##loads generated
 l1 = 4
 l2 = 4
@@ -58,6 +61,10 @@ pipe5.add_edges_from([(source5, NF2,{'filter':'r4'}),
 
 
 def main():
+    net = Mininet(controller=RemoteController,
+              link=TCLink,
+              switch=OVSKernelSwitch,
+              autoStaticArp=True)
     e2_main = e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]])
     pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5])
     #igraph= e2.create_igraph(pgraph,[source1,source2,source3,source4,source5])
