@@ -147,6 +147,7 @@ class e2():
         """
         function to bin pack the NF instances
         """
+        print "Enter binpack"
         switches_places = {}
         list_of_srcs= list(pipelets_sources)
         node_list=[]
@@ -160,6 +161,7 @@ class e2():
         bin_num = 0 
         cap_sum = 0         
         for node in node_list:
+            print node
             cap_sum = cap_sum + node.nf_capacity
             if cap_sum <= bin_capacity:
                 node.switch_placed = "s"+str(bin_num)
