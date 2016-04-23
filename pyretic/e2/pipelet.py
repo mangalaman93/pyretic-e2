@@ -22,7 +22,7 @@ class E2NF(object):
         return self.name + " " + self.node_id
         
     def __repr__(self):
-        print self.__str__()
+        return self.__str__()
 
 class E2Pipelet(nx.DiGraph):
     """E2 Pipelet defining end to end flow"""
