@@ -87,7 +87,7 @@ class e2():
         
         return pgraph
     
-    def create_igraph(self, sources, dests, pgraph):
+    def create_igraph(self, hosts, pgraph):
         """
         function to get igraph
         """
@@ -102,14 +102,14 @@ class e2():
         
         bin_capacity = 10
         # creating NFs,sources,dests
-        source1 = sources[0]
-        source2 = sources[1]
-        source3 = sources[2]
-        source4 = sources[3]
-        source5 = sources[4]
+        source1 = hosts[0]
+        source2 = hosts[1]
+        source3 = hosts[2]
+        source4 = hosts[3]
+        source5 = hosts[4]
         
-        dest1 = dests[0]
-        dest2 = dests[1]
+        dest1 = hosts[5]
+        dest2 = hosts[6]
         
         NF1_1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
         NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
@@ -125,23 +125,22 @@ class e2():
         
         igraph = E2Pipelet('igraph')
         #igraph.add_nodes_from(pgraph.nodes())
-        igraph.add_nodes_from(sources)
-        igraph.add_nodes_from(dests)
+        igraph.add_nodes_from(hosts)
         igraph.add_nodes_from([NF1_1, NF2_1, NF1_2, NF2_2, NF3_1, NF3_2, NF3_3, NF3_4, NF3_5])
 
         igraph.add_edge(source1,NF1_2,{'filter':'r1'})
-        igraph.add_edge(source2,NF1,{'filter':'r4'})
-        igraph.add_edge(source3,NF2,{'filter':'r4'})
-        igraph.add_edge(source4,NF2,{'filter':'r4'})
+        igraph.add_edge(source2,NF1_1,{'filter':'r4'})
+        igraph.add_edge(source3,NF2_1,{'filter':'r4'})
+        igraph.add_edge(source4,NF2_1,{'filter':'r4'})
         igraph.add_edge(source5,NF2_2,{'filter':'r4'})
         
-        igraph.add_edge(NF1_2,NF3,{'filter':'r2'})
-        igraph.add_edge(NF1,NF3_2,{'filter':'r5'})
-        igraph.add_edge(NF2,NF3_3,{'filter':'r5'})
-        igraph.add_edge(NF2,NF3_4,{'filter':'r5'})
+        igraph.add_edge(NF1_2,NF3_1,{'filter':'r2'})
+        igraph.add_edge(NF1_1,NF3_2,{'filter':'r5'})
+        igraph.add_edge(NF2_1,NF3_3,{'filter':'r5'})
+        igraph.add_edge(NF2_1,NF3_4,{'filter':'r5'})
         igraph.add_edge(NF2_2,NF3_5,{'filter':'r5'})
         
-        igraph.add_edge(NF3,dest1,{'filter':'r4'})
+        igraph.add_edge(NF3_1,dest1,{'filter':'r4'})
         igraph.add_edge(NF3_2, dest1, {'filter':'r4'})
         igraph.add_edge(NF3_3, dest2,{'filter':'r2'})
         igraph.add_edge(NF3_4, dest2,{'filter':'r5'})
