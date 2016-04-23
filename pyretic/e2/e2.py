@@ -87,7 +87,7 @@ class e2():
         
         return pgraph
     
-    def create_igraph(self, sources, pgraph,pipelets_sources):
+    def create_igraph(self, sources, dests, pgraph):
         """
         function to get igraph
         """
@@ -108,21 +108,27 @@ class e2():
         source4 = sources[3]
         source5 = sources[4]
         
-        NF1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
-        NF2 = E2NF("s7", 1, '2_1',nf_capacity=nfc2)
-        NF3 = E2NF("s8", 1, '3_1',nf_capacity=nfc3)
-        dest1 = E2NF("s9", 1, 'dst1')
-        dest2 = E2NF("s10", 1,'dst2')
-        igraph = E2Pipelet('igraph')
-        igraph.add_nodes_from(pgraph.nodes())
+        dest1 = dest[0]
+        dest2 = dest[1]
+        
+        NF1_1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
         NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
+        
+        NF2_1 = E2NF("s7", 1, '2_1',nf_capacity=nfc2)
         NF2_2 = E2NF("s12", 1, '2_2',nf_capacity=nfc2)
+       
+        NF3_1 = E2NF("s8", 1, '3_1',nf_capacity=nfc3)
         NF3_2 = E2NF("s13", 1, '3_2',nf_capacity=nfc3)
         NF3_3 = E2NF("s14", 1, '3_3',nf_capacity=nfc3)
         NF3_4 = E2NF("s15", 1, '3_4',nf_capacity=nfc3)
         NF3_5 = E2NF("s16", 1, '3_5',nf_capacity=nfc3)
+        
+        igraph = E2Pipelet('igraph')
+        #igraph.add_nodes_from(pgraph.nodes())
+ 	igraph.add_nodes_from(sources)
+         igraph.add_nodes_from(dest)
+        igraph.add_nodes_from([NF1_1, NF2_1, NF1_2, NF2_2, NF3_1, NF3_2, NF3_3, NF3_4, NF3_5])
 
-        igraph.add_nodes_from([NF1_2,NF2_2,NF3_2,NF3_3,NF3_4,NF3_5])
         igraph.add_edge(source1,NF1_2,{'filter':'r1'})
         igraph.add_edge(source2,NF1,{'filter':'r4'})
         igraph.add_edge(source3,NF2,{'filter':'r4'})
