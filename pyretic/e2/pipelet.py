@@ -19,7 +19,7 @@ class E2NF(object):
         return self.name.__hash__()
         
     def __str__(self):
-        return self.name + " " + self.node_id + " " + self.switch_placed
+        return self.name + " " + self.node_id + " " + str(self.switch_placed)
         
     def __repr__(self):
         return self.__str__()
