@@ -71,9 +71,9 @@ def main():
     #print(pgraph.edges())
     #print pgraph
     igraph= e2_main.create_igraph(pgraph,[source1,source2,source3,source4,source5])
-    print(igraph.nodes())
-    print(igraph.edges())
-    #e2_main.bin_pack(iggraph,[source1,source2,source3,source4,source5],bin_capacity)
+    #print(igraph.nodes())
+    #print(igraph.edges())
+    e2_main.bin_pack(iggraph,[source1,source2,source3,source4,source5],bin_capacity)
     something = 1
     return something
 
