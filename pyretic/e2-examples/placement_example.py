@@ -70,7 +70,7 @@ def main():
     #print(pgraph.nodes())
     #print(pgraph.edges())
     #print pgraph
-    igraph= e2_main.create_igraph([source1,source2,source3,source4,source5],[dest1, dest2], pgraph)
+    igraph= e2_main.create_igraph([source1,source2,source3,source4,source5,dest1,dest2], pgraph)
     #print(igraph.nodes())
     #print(igraph.edges())
     e2_main.bin_pack(igraph,[source1,source2,source3,source4,source5],bin_capacity)
