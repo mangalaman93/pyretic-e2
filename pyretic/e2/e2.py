@@ -108,8 +108,8 @@ class e2():
         source4 = sources[3]
         source5 = sources[4]
         
-        dest1 = dest[0]
-        dest2 = dest[1]
+        dest1 = dests[0]
+        dest2 = dests[1]
         
         NF1_1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
         NF1_2 = E2NF("s11", 1,'1_2',nf_capacity=nfc1)
