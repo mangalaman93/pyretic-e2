@@ -189,5 +189,9 @@ class e2():
         return igraph
 
     def update_pipelets(self, igraph):
+        print "update pipelets"
+        print type(igraph)
+        print igraph.nodes()
+        
         graphs = list(nx.connected_component_subgraphs(igraph))
         print graphs
