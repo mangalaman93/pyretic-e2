@@ -154,7 +154,7 @@ class e2():
         print "Sources", list_of_srcs
         for src in list_of_srcs:
             print "DFS EDGES", nx.dfs_edges(igraph,src)
-            for edge in nx.dfs_edges(igraph,src):
+            for edge in list(nx.dfs_edges(igraph,src)):
                 print  "Edge",edge
                 if edge[1] in node_list:
                     pass
