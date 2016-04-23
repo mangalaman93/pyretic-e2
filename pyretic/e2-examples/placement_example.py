@@ -56,10 +56,10 @@ pipe5.add_edges_from([(source5, NF2,{'filter':'r4'}),
 
 
 def main():
-	e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]]).policy()
-	pgraph = e2.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5])
-	igraph= e2.create_igraph(pgraph,[source1,source2,source3,source4,source5])
-	e2.bin_pack(iggraph,[source1,source2,source3,source4,source5],bin_capacity)
+	e2_main = e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]])
+	pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5])
+	#igraph= e2.create_igraph(pgraph,[source1,source2,source3,source4,source5])
+	#e2.bin_pack(iggraph,[source1,source2,source3,source4,source5],bin_capacity)
 	something = 1
     return something
 
