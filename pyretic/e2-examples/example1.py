@@ -137,13 +137,18 @@ pipe5.add_edges_from([
     ])
     
 def main():
-  e2_main = e2(net, [[pipe1,pipe2,pipe3,pipe4,pipe5]])
-  pgraph = e2_main.merge_pipelets([pipe1,pipe2,pipe3,pipe4,pipe5], "pgraph1")
+  pipelets = [pipe1, pipe2, pipe3, pipe4, pipe5]
+  e2_main = e2(net, pipelets)
+  
+  pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print "==============PGRAPH==============="
   print(pgraph.nodes())
   print(pgraph.edges())
   
-  igraph= e2_main.create_igraph([source1,source2,source3,source4,source5,dest1,dest2], pgraph)
+  igraph= e2_main.create_igraph([source1, source2, source3, source4, source5, dest1, dest2], pgraph)
   print "==============IGRAPH==============="
   print(igraph.nodes())
   print(igraph.edges())
+
+  e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
+  
