@@ -87,7 +87,7 @@ class e2():
         
         return pgraph
     
-    def create_igraph(self, pgraph,pipelets_sources):
+    def create_igraph(self, sources, pgraph,pipelets_sources):
         """
         function to get igraph
         """
@@ -102,11 +102,11 @@ class e2():
         
         bin_capacity = 10
         # creating NFs,sources,dests
-        source1 = E2NF("s1", 1,'src1',inp_load_estimate=l1)
-        source2 = E2NF("s2", 1,'src2',inp_load_estimate=l2)
-        source3 = E2NF("s3", 1,'src3',inp_load_estimate=l3)
-        source4 = E2NF("s4", 1,'src4',inp_load_estimate=l4)
-        source5 = E2NF("s5", 1,'src5',inp_load_estimate=l5)
+        source1 = sources[0]
+        source2 = sources[1]
+        source3 = sources[2]
+        source4 = sources[3]
+        source5 = sources[4]
         
         NF1 = E2NF("s6", 1,'1_1',nf_capacity=nfc1)
         NF2 = E2NF("s7", 1, '2_1',nf_capacity=nfc2)
@@ -143,19 +143,19 @@ class e2():
         
         return igraph
     
-    def bin_pack(self, igraph, pipelets_sources, bin_capacity):
+    def bin_pack(self, igraph, sources, bin_capacity):
         """
         function to bin pack the NF instances
         """
         print "Enter binpack"
         switches_places = {}
-        list_of_srcs= list(pipelets_sources)
+        
         node_list=[]
         print "Sources", list_of_srcs
         print "Nodes", igraph.nodes()
         print "Edges", igraph.edges()
 
-        for src in igraph.nodes():
+        for src in sources:
             print "DFS EDGES", src, list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
                 print  "Edge", edge
