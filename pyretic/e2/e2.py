@@ -198,5 +198,5 @@ class e2():
         print "update pipelets"
         print type(igraph)
         print igraph.nodes()
-        graphs = list(nx.connected_component_subgraphs(igraph))
+        graphs = list(nx.strongly_connected_component_subgraphs(igraph))
         print graphs
