@@ -81,8 +81,10 @@ class e2():
             if i==0:
                 pgraph = pipelets_list[i]
             else:
-                pgraph = nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]), "pgraph")
-
+                pgraph = nx.compose(nx.DiGraph(pgraph),nx.DiGraph(pipelets_list[i]))
+        
+        pgraph.name = "Pgraph"
+        
         return pgraph
     
     def create_igraph(self, pgraph,pipelets_sources):
