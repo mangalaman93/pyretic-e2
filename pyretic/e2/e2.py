@@ -107,6 +107,9 @@ class e2():
             for edge in list(nx.dfs_edges(igraph, source)):
                 node1 = edge[0]
                 node2 = edge[1]
+                
+                print "NODE1-> ", node1.name, " NODE2-> ", node2.name
+                
                 src_sw = node1.switch_placed
                 dst_sw = node2.switch_placed
                 
