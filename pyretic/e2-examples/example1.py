@@ -148,6 +148,7 @@ pipe5.add_edges_from([
     
 def main():
   pipelets = [pipe1, pipe2, pipe3, pipe4, pipe5]
+  sources = [source1, source2, source3, source4, source5]
   e2_main = e2(net, pipelets)
   
   print "==============PGRAPH==============="
@@ -158,12 +159,12 @@ def main():
   # pdb.set_trace()
   
   print "==============IGRAPH==============="
-  igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
+  igraph= e2_main.create_igraph(pgraph, sources)
   print(igraph.nodes())
   print(igraph.edges(data=True))
 
   print "==============BIN PACKING==============="
-  new_igraph = e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
+  new_igraph = e2_main.bin_pack(igraph, sources, bin_capacity)
   
   print "==============UPDATE PIPELETS==============="
-  e2_main.policy(new_igraph)
+  e2_main.policy(new_igraph, sources)
