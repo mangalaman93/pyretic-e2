@@ -169,7 +169,7 @@ class e2():
                 else:
                     node_list.append(edge[1])
         bin_full = 0
-        bin_num = 0 
+        bin_num = 1 
         cap_sum = 0  
         #print "Node list", node_list
         for node in node_list:
