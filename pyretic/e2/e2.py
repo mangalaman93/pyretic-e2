@@ -57,7 +57,7 @@ class e2():
     def policy(self, igraph, pipelets_sources, hws):
         nodedict = {}
         interfaces = {}
-        policy = {}
+        policy = None
         dpid = self.dpid_dict()
         ipmap = self.host_dict()
         
