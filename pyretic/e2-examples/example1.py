@@ -70,6 +70,8 @@ net.addLink(s3,s7)
 net.addLink(s4,s7)
 net.addLink(s5,s7)
 net.addLink(s6,s7)
+net.addLink(s8,s7)
+net.addLink(s9,s7)
 
 c8 = net.addController('c8', controller=RemoteController, ip='127.0.0.1', port=6633)
 net.start()
