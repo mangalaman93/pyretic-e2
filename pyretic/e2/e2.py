@@ -54,7 +54,7 @@ class e2():
             ipmap[host.name] = host.IP()
         return ipmap
 
-    def policy(self, igraph):
+    def policy(self, igraph, pipelets_sources, hws):
         nodedict = {}
         interfaces = {}
         dpid = {}
@@ -86,26 +86,41 @@ class e2():
                 interfaces[link.intf2.name.split("-")[0]] = {}
             interfaces[link.intf1.name.split("-")[0]][link.intf2.name.split("-")[0]] = link.intf1.name.split("-")[1][pos:]
             interfaces[link.intf2.name.split("-")[0]][link.intf1.name.split("-")[0]] = link.intf2.name.split("-")[1][pos:]
-        
-        print interfaces
-        
-        for edge in self.pipelets.edges(data=True):
-             if edge[0].name not in nodedict:
-                nodedict[edge[0].name] = []
-             nodedict[edge[0].name].append(edge)
 
-        for sw in dpid.keys():
-            route  = None
-            if sw in nodedict:
-                for rule in nodedict[sw]:
-                    if route is None:
-                        route = (rule[2]['filter'] >> fwd(int(interfaces[sw][rule[1].name])))
-                    else:
-                        route = route + (rule[2]['filter'] >> fwd(int(interfaces[sw][rule[1].name])))
-                if policy is None:
-                    policy = (match(switch = int(dpid[sw])) >> route)
+        for source in pipelets_sources:
+            for edge in list(nx.dfs_edges(igraph, source)):
+                node1 = edge[0]
+                node2 = edge[1]
+                src_sw = node1.switch_placed
+                dst_sw = node2.switch_placed
+                data = igraph.get_edge_data(node1, node2)
+                filters = data['filter']
+                sources = data['source']
+                ip = ipmap[source.name]
+                src_mac = switches[src_sw].MAC()
+                hw_mac = switches[hws].MAC()
+                if node1.node_id[:3] == 'src':
+                    assert (node1 in sources)
+                    # rule from source switch to hardware switch
+                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip) + filters) >> fwd(int(interfaces[src_sw][hws])))
+                    # rule from hardware switch to a switch connected to node2
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
+                elif node2.node_id[:3] == 'dst':
+                    assert (node1 in sources)
+                    # rule from source switch to hardware switch
+                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, srcmac=hw_mac) + filters) >> fwd(int(interfaces[src_sw][hws])))
+                    # rule from hardware switch to a switch connected to node2
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
                 else:
-                    policy += (match(switch = int(dpid[sw])) >> route)
+                    if src_sw == dst_sw:
+                        continue
+                    if not source in sources:
+                        continue
+                    # rule from source switch to hardware switch
+                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, srcmac=hw_mac) + filters) >> fwd(int(interfaces[src_sw][hws])))
+                    # rule from hardware switch to a switch connected to node2
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
+        print policy
         return policy
 
     def merge_pipelets(self, pipelets_list, graph_name):
