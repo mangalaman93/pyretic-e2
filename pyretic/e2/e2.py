@@ -42,6 +42,12 @@ class e2():
         self.net = net
         self.pipelets = pipelets
 
+    def switch_dict(self):
+        switches = {}
+        for s in self.net.switches:
+            switches[s.name] = s
+        return switches
+        
     def dpid_dict(self):
         dpid = {}
         for s in self.net.switches:
@@ -60,10 +66,13 @@ class e2():
         policy = None
         dpid = self.dpid_dict()
         ipmap = self.host_dict()
+        switches = self.switch_dict()
         
         print "DPID", dpid
         
         print "IPMAP", ipmap
+        
+        print "SWITCH", switches
         
         for link in self.net.links:
             pos = link.intf1.name.split("-")[1].rindex("h") + 1
