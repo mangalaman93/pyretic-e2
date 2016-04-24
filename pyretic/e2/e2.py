@@ -60,7 +60,11 @@ class e2():
         policy = {}
         dpid = self.dpid_dict()
         ipmap = self.host_dict()
-
+        
+        print "DPID", dpid
+        
+        print "IPMAP", ipmap
+        
         for link in self.net.links:
             pos = link.intf1.name.split("-")[1].rindex("h") + 1
             print link.intf1.name, "   ", link.intf2.name
