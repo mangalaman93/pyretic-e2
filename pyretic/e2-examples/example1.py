@@ -25,30 +25,31 @@ bin_capacity = 10
 net = Mininet(controller=RemoteController,
               link=TCLink,
               switch=OVSKernelSwitch,
-              autoStaticArp=True)
+              autoStaticArp=True,
+              autoSetMacs=True)
 
 # Add hosts and switches
 
-s1 = net.addSwitch('s1', mac='00:00:00:00:00:01')
-s2 = net.addSwitch('s2', mac='00:00:00:00:00:02')
-s3 = net.addSwitch('s3', mac='00:00:00:00:00:03')
-s4 = net.addSwitch('s4', mac='00:00:00:00:00:04')
-s5 = net.addSwitch('s5', mac='00:00:00:00:00:05')
-s6 = net.addSwitch('s6', mac='00:00:00:00:00:06')
+s1 = net.addSwitch('s1')
+s2 = net.addSwitch('s2')
+s3 = net.addSwitch('s3')
+s4 = net.addSwitch('s4')
+s5 = net.addSwitch('s5')
+s6 = net.addSwitch('s6')
 #hws
-s7 = net.addSwitch('s7', mac='00:00:00:00:00:07')
+s7 = net.addSwitch('s7')
 #src
-s8 = net.addSwitch('s8', mac='00:00:00:00:00:08')
+s8 = net.addSwitch('s8')
 #dest
-s9 = net.addSwitch('s9', mac='00:00:00:00:00:09')
+s9 = net.addSwitch('s9')
 
-h1 = net.addHost('h1', mac='00:00:00:00:00:10')
-h2 = net.addHost('h2', mac='00:00:00:00:00:11')
-h3 = net.addHost('h3', mac='00:00:00:00:00:12')
-h4 = net.addHost('h4', mac='00:00:00:00:00:13')
-h5 = net.addHost('h5', mac='00:00:00:00:00:14')
-h6 = net.addHost('h6', mac='00:00:00:00:00:15')
-h7 = net.addHost('h7', mac='00:00:00:00:00:16')
+h1 = net.addHost('h1')
+h2 = net.addHost('h2')
+h3 = net.addHost('h3')
+h4 = net.addHost('h4')
+h5 = net.addHost('h5')
+h6 = net.addHost('h6')
+h7 = net.addHost('h7')
 
 # Add links
 
