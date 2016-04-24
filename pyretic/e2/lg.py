@@ -7,10 +7,13 @@ import commands
 class LoadGenerator(object):
     """Generates artificial load for E2 hosts"""
     @staticmethod
-    def src(destip, destport, num_request=0):
+    def src(destip, destport, tcp=True, num_request=0):
         nping = commands.getoutput("which nping")
+        args = ""
+        if not tcp:
+            args = "--udp "
         if nping:
-            return "{} --udp --rate 1 -c {} -p {} {}".format(nping, num_request, destport, destip)
+            return "{} {}--rate 1 -c {} -p {} {}".format(nping, args, num_request, destport, destip)
         else:
             raise Exception("nping not found!")
 
