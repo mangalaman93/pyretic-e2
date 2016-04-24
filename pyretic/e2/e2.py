@@ -68,11 +68,11 @@ class e2():
         ipmap = self.host_dict()
         switches = self.switch_dict()
         
-        print "DPID", dpid
+        #print "DPID", dpid
         
-        print "IPMAP", ipmap
+        #print "IPMAP", ipmap
         
-        print "SWITCH", switches
+        #print "SWITCH", switches
         
         for link in self.net.links:
             pos = link.intf1.name.split("-")[1].rindex("h") + 1
@@ -101,14 +101,14 @@ class e2():
             interfaces[link.intf1.name.split("-")[0]][link.intf2.name.split("-")[0]] = link.intf1.name.split("-")[1][pos:]
             interfaces[link.intf2.name.split("-")[0]][link.intf1.name.split("-")[0]] = link.intf2.name.split("-")[1][pos:]
         
-        print "INTERFACES", interfaces
+        #print "INTERFACES", interfaces
         
         for source in pipelets_sources:
             for edge in list(nx.dfs_edges(igraph, source)):
                 node1 = edge[0]
                 node2 = edge[1]
                 
-                print "NODE1-> ", node1.name, " NODE2-> ", node2.name
+                #print "NODE1-> ", node1.name, " NODE2-> ", node2.name
                 
                 src_sw = node1.switch_placed
                 dst_sw = node2.switch_placed
