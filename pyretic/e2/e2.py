@@ -63,6 +63,7 @@ class e2():
 
         for link in self.net.links:
             pos = link.intf1.name.split("-")[1].rindex("h") + 1
+            print link.intf1.name, "   ", link.intf2.name
             # if it is a host link
             if link.intf1.name.split("-")[0][0] == 'h':
                 host = link.intf1.name.split("-")[0]
