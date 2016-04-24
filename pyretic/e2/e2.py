@@ -29,9 +29,10 @@ def find_or_create_instance(load, nf):
 # helper function for creating igraph
 # annotates the edge with correct filters and adds the edge (and hence nodes)
 #  to the given igraph
-def update_igraph(igraph, node1_instance, node2_instance):
-    # TODO - add filter
-    igraph.add_edge(node1_instance, node2_instance)
+def update_igraph(igraph, node1_instance, node2_instance, filter_dict, source):
+    # add filter
+    filter_dict['source'] = source
+    igraph.add_edge(node1_instance, node2_instance, filter_dict)
 
 class e2():
     def __init__(self, net, pipelets):
@@ -177,18 +178,18 @@ class e2():
                 
                 if node1.node_id[:3] == 'src':
                     node2_instance = find_or_create_instance(node1.inp_load_estimate, node2)
-                    update_igraph(igraph, node1, node2_instance)
+                    update_igraph(igraph, node1, node2_instance, pgraph.get_edge_data(node1, node2), src)
                     assert not (node2 in current_instance)
                     current_instance[node2] = node2_instance
                 elif node2.node_id[:3] == 'dst':
                     if self.should_I_add_an_edge_to_dest_from_src(src, node2):
                         node1_instance = current_instance[node1]
-                        update_igraph(igraph, node1_instance, node2)
+                        update_igraph(igraph, node1_instance, node2, pgraph.get_edge_data(node1, node2), src)
                 else:
                     node1_instance = current_instance[node1]
                     load = node1_instance.inp_load_estimate
                     node2_instance = find_or_create_instance(load, node2)
-                    update_igraph(igraph, node1_instance, node2_instance)
+                    update_igraph(igraph, node1_instance, node2_instance, pgraph.get_edge_data(node1, node2), src)
                     assert not (node2 in current_instance)
                     current_instance[node2] = node2_instance
         # print list(igraph.edges())
