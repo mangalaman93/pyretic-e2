@@ -128,7 +128,7 @@ class e2():
                     # rule from hardware switch to a switch connected to node2
                     policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
                 elif node2.node_id[:3] == 'dst':
-                    assert (node1 in sources)
+                    assert (source in sources)
                     # rule from source switch to hardware switch
                     policy += ((match(switch=int(dpid[src_sw]), srcip=ip, srcmac=hw_mac) + filters) >> fwd(int(interfaces[src_sw][hws])))
                     # rule from hardware switch to a switch connected to node2
