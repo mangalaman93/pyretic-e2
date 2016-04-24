@@ -97,10 +97,7 @@ pipe1.add_nodes_from([source1, NF1, NF3, dest1])
 pipe1.add_edges_from([
     (source1, NF1,{'filter': match(dstport = 80)}),
     (NF1, NF3,{'filter':match(dstport = 80)}),
-    (NF3, dest1,{'filter': match(dstport = 80)}),
-    (NF1, source1,{'filter': match(srcport = 80)}),
-    (NF3,NF1,{'filter': match(srcport = 80)}),
-    (dest1, NF3,{'filter': match(srcport = 80)}),
+    (NF3, dest1,{'filter': match(dstport = 80)})
     ])
 
 pipe2 = E2Pipelet("pipelet-2")
@@ -108,10 +105,7 @@ pipe2.add_nodes_from([source2, NF1, NF3, dest1])
 pipe2.add_edges_from([
     (source2, NF1, {'filter': match(dstport = 80)}),
     (NF1, NF3, {'filter':match(dstport = 80)}),
-    (NF3, dest1, {'filter': match(dstport = 80)}),
-    (NF1, source2, {'filter': match(srcport = 80)}),
-    (NF3, NF1, {'filter': match(srcport = 80)}),
-    (dest2, NF3, {'filter': match(srcport = 80)}),
+    (NF3, dest1, {'filter': match(dstport = 80)})
     ])
 
 pipe3 = E2Pipelet("pipelet-3")
@@ -119,10 +113,7 @@ pipe3.add_nodes_from([source3, NF2, NF3, dest2])
 pipe3.add_edges_from([
     (source3, NF2, {'filter': match(dstport = 8000)}),
     (NF2, NF3, {'filter':match(dstport = 8000)}),
-    (NF3, dest2, {'filter': match(dstport = 8000)}),
-    (NF2, source3, {'filter': match(srcport = 8000)}),
-    (NF3, NF2, {'filter': match(srcport = 8000)}),
-    (dest2, NF3, {'filter': match(srcport = 8000)}),
+    (NF3, dest2, {'filter': match(dstport = 8000)})
     ])
 
 pipe4 = E2Pipelet("pipelet-4")
@@ -130,10 +121,7 @@ pipe4.add_nodes_from([source4, NF2, NF3, dest2])
 pipe4.add_edges_from([
     (source4, NF2,{'filter':match(dstport = 8000)}),
     (NF2, NF3,{'filter':match(dstport = 8000)}),
-    (NF3, dest2,{'filter':match(dstport = 8000)}),
-    (NF2, source4, {'filter':match(srcport = 8000)}),
-    (NF3, NF2, {'filter':match(srcport = 8000)}),
-    (dest2, NF3,{'filter':match(srcport = 8000)})
+    (NF3, dest2,{'filter':match(dstport = 8000)})
     ])
 
 pipe5 = E2Pipelet("pipelet-5")
@@ -141,10 +129,7 @@ pipe5.add_nodes_from([source5, NF2, NF3, dest2])
 pipe5.add_edges_from([
     (source5, NF2,{'filter':match(dstport = 8000)}),
     (NF2, NF3,{'filter':match(dstport = 8000)}),
-    (NF3, dest2,{'filter':match(dstport = 8000)}),
-    (NF2, source5, {'filter':match(srcport = 8000)}),
-    (NF3, NF2, {'filter':match(srcport = 8000)}),
-    (dest2, NF3,{'filter':match(srcport = 8000)})
+    (NF3, dest2,{'filter':match(dstport = 8000)})
     ])
     
 dest1 = LoadGenerator.dest(80)
