@@ -79,7 +79,9 @@ class e2():
                 interfaces[link.intf2.name.split("-")[0]] = {}
             interfaces[link.intf1.name.split("-")[0]][link.intf2.name.split("-")[0]] = link.intf1.name.split("-")[1][pos:]
             interfaces[link.intf2.name.split("-")[0]][link.intf1.name.split("-")[0]] = link.intf2.name.split("-")[1][pos:]
-
+        
+        print interfaces
+        
         for edge in self.pipelets.edges(data=True):
              if edge[0].name not in nodedict:
                 nodedict[edge[0].name] = []
