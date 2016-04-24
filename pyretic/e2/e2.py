@@ -57,8 +57,8 @@ class e2():
     def policy(self, igraph, pipelets_sources, hws):
         nodedict = {}
         interfaces = {}
-        dpid = {}
-        policy = self.dpid_dict()
+        policy = {}
+        dpid = self.dpid_dict()
         ipmap = self.host_dict()
 
         for link in self.net.links:
