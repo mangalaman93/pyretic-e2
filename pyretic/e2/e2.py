@@ -42,7 +42,7 @@ class e2():
         self.net = net
         self.pipelets = pipelets
 
-     def dpid_dict(self):
+    def dpid_dict(self):
         dpid = {}
         for s in self.net.dpid:
             dpid[s.name] = s.dpid
