@@ -44,7 +44,7 @@ class e2():
 
     def dpid_dict(self):
         dpid = {}
-        for s in self.net.dpid:
+        for s in self.net.switches:
             dpid[s.name] = s.dpid
         return dpid
 
