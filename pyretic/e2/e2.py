@@ -119,29 +119,34 @@ class e2():
                 filters = data['filter']
                 sources = data['source']
                 ip = ipmap[source.name]
-                src_mac = switches[src_sw].MAC()
+                
+                src_mac = EthAddr(switches[src_sw].MAC())
                 hw_mac = switches[hws].MAC()
+                
+                hws_inport = int(interfaces[hws][src_sw])
+                src_inport = int(interfaces[src_sw][hws])
+                
                 if node1.node_id[:3] == 'src':
                     assert (node1 in sources)
                     # rule from source switch to hardware switch
                     policy += ((match(switch=int(dpid[src_sw]), srcip=ip) + filters) >> fwd(int(interfaces[src_sw][hws])))
                     # rule from hardware switch to a switch connected to node2
-                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, inport=hws_inport) + filters) >> fwd(int(interfaces[hws][dst_sw])))
                 elif node2.node_id[:3] == 'dst':
                     assert (source in sources)
                     # rule from source switch to hardware switch
-                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, srcmac=hw_mac) + filters) >> fwd(int(interfaces[src_sw][hws])))
+                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, inport=src_inport) + filters) >> fwd(int(interfaces[src_sw][hws])))
                     # rule from hardware switch to a switch connected to node2
-                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, inport=hws_inport) + filters) >> fwd(int(interfaces[hws][dst_sw])))
                 else:
                     if src_sw == dst_sw:
                         continue
                     if not source in sources:
                         continue
                     # rule from source switch to hardware switch
-                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, srcmac=hw_mac) + filters) >> fwd(int(interfaces[src_sw][hws])))
+                    policy += ((match(switch=int(dpid[src_sw]), srcip=ip, inport=src_inport) + filters) >> fwd(int(interfaces[src_sw][hws])))
                     # rule from hardware switch to a switch connected to node2
-                    policy += ((match(switch=int(dpid[hws]), srcip=ip, srcmac=src_mac) + filters) >> fwd(int(interfaces[hws][dst_sw])))
+                    policy += ((match(switch=int(dpid[hws]), srcip=ip, inport=hws_inport) + filters) >> fwd(int(interfaces[hws][dst_sw])))
         print policy
         return policy
 
