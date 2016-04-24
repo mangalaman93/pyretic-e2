@@ -163,7 +163,7 @@ def main():
   print "==============PGRAPH==============="
   pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print(pgraph.nodes())
-  print(pgraph.edges())
+  print(pgraph.edges(data=True))
   
   # pdb.set_trace()
   
