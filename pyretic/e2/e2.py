@@ -31,7 +31,10 @@ def find_or_create_instance(load, nf):
 #  to the given igraph
 def update_igraph(igraph, node1_instance, node2_instance, filter_dict, source):
     # add filter
-    filter_dict['source'] = source
+    if 'source' in filter_dict:
+        filter_dict['source'].append(source)
+    else:
+        filter_dict['source'] = [source]
     igraph.add_edge(node1_instance, node2_instance, filter_dict)
 
 class e2():
@@ -39,21 +42,25 @@ class e2():
         self.net = net
         self.pipelets = pipelets
 
-    def policy(self):
+     def dpid_dict(self):
+        dpid = {}
+        for s in self.net.dpid:
+            dpid[s.name] = s.dpid
+        return dpid
+
+    def host_dict(self):
+        ipmap = {}
+        for host in self.net.hosts:
+            ipmap[host.name] = host.IP()
+        return ipmap
+
+    def policy(self, igraph):
         nodedict = {}
         interfaces = {}
         dpid = {}
-        policy = None
-        ipmap = {}
+        policy = self.dpid_dict()
+        ipmap = self.host_dict()
 
-        for s in self.net.switches:
-            dpid[s.name] = s.dpid
-
-        for host in self.net.hosts:
-            ipmap[host.name] = host.IP()
-
-        print self.net.links
-        
         for link in self.net.links:
             pos = link.intf1.name.split("-")[1].rindex("h") + 1
             # if it is a host link
@@ -196,10 +203,3 @@ class e2():
                     current_instance[node2] = node2_instance
         # print list(igraph.edges())
         return igraph
-
-    def update_pipelets(self, igraph):
-        print "update pipelets"
-        print type(igraph)
-        print igraph.nodes()
-        graphs = list(nx.strongly_connected_component_subgraphs(igraph))
-        print graphs
