@@ -120,9 +120,6 @@ class e2():
                 sources = data['source']
                 ip = ipmap[source.name]
                 
-                src_mac = EthAddr(switches[src_sw].MAC())
-                hw_mac = switches[hws].MAC()
-                
                 hws_inport = int(interfaces[hws][src_sw])
                 src_inport = int(interfaces[src_sw][hws])
                 
