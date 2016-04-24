@@ -167,4 +167,4 @@ def main():
   new_igraph = e2_main.bin_pack(igraph, sources, bin_capacity)
   
   print "==============UPDATE PIPELETS==============="
-  e2_main.policy(new_igraph, sources)
+  e2_main.policy(new_igraph, sources, 's7')
