@@ -88,8 +88,8 @@ NF1 = E2NF("NF1", 1,'NF1',nf_capacity=nfc1)
 NF2 = E2NF("NF2", 1, 'NF2',nf_capacity=nfc2)
 NF3 = E2NF("NF3", 1, 'NF3',nf_capacity=nfc3)
 
-dest1 = E2NF("h6", 1, 'dst1', switch_placed='s9')
-dest2 = E2NF("h7", 1,'dst2', switch_placed='s9')
+dest1 = E2NF("h6", 1, 'dst1', inp_load_estimate=(l1+l2), switch_placed='s9')
+dest2 = E2NF("h7", 1,'dst2', inp_load_estimate=(l3+l4+l5), switch_placed='s9')
 
 # create pipelets
 pipe1 = E2Pipelet("pipelet-1")
