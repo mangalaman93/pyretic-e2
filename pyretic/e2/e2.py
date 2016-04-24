@@ -100,13 +100,18 @@ class e2():
                 interfaces[link.intf2.name.split("-")[0]] = {}
             interfaces[link.intf1.name.split("-")[0]][link.intf2.name.split("-")[0]] = link.intf1.name.split("-")[1][pos:]
             interfaces[link.intf2.name.split("-")[0]][link.intf1.name.split("-")[0]] = link.intf2.name.split("-")[1][pos:]
-
+        
+        print "INTERFACES", interfaces
+        
         for source in pipelets_sources:
             for edge in list(nx.dfs_edges(igraph, source)):
                 node1 = edge[0]
                 node2 = edge[1]
                 src_sw = node1.switch_placed
                 dst_sw = node2.switch_placed
+                
+                print "SOURCE SW-> ", src_sw, " DEST SW-> ", dst_sw
+                
                 data = igraph.get_edge_data(node1, node2)
                 filters = data['filter']
                 sources = data['source']
