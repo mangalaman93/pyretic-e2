@@ -115,17 +115,17 @@ class e2():
         """
         function to bin pack the NF instances
         """
-        print "Enter binpack"
+        #print "Enter binpack"
         switches_places = {}
         
         node_list=[]
-        print "Nodes", igraph.nodes()
-        print "Edges", igraph.edges()
+        #print "Nodes", igraph.nodes()
+        #print "Edges", igraph.edges()
 
         for src in sources:
-            print "DFS EDGES", src, list(nx.dfs_edges(igraph,src))
+            #print "DFS EDGES", src, list(nx.dfs_edges(igraph,src))
             for edge in list(nx.dfs_edges(igraph,src)):
-                print  "Edge", edge
+                #print  "Edge", edge
                 if edge[1] in node_list:
                     pass
                 else:
@@ -133,7 +133,7 @@ class e2():
         bin_full = 0
         bin_num = 0 
         cap_sum = 0  
-        print "Node list", node_list
+        #print "Node list", node_list
         for node in node_list:
             if node.node_id[0]=='d' or node.node_id[0]=='s':
                 continue
@@ -169,12 +169,12 @@ class e2():
             # nf -> nf instance, keeps track of the assigned instance for this source
             current_instance = {}
             
-            print "DFS Edges:", list(nx.dfs_edges(pgraph, src))
+            #print "DFS Edges:", list(nx.dfs_edges(pgraph, src))
             
             for edge in list(nx.dfs_edges(pgraph, src)):
                 node1 = edge[0]
                 node2 = edge[1]
-                print "Nodes:", node1, node2
+                #print "Nodes:", node1, node2
                 
                 if node1.node_id[:3] == 'src':
                     node2_instance = find_or_create_instance(node1.inp_load_estimate, node2)
