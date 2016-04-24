@@ -47,8 +47,8 @@ h2 = net.addHost('h2', mac='00:00:00:00:00:11')
 h3 = net.addHost('h3', mac='00:00:00:00:00:12')
 h4 = net.addHost('h4', mac='00:00:00:00:00:13')
 h5 = net.addHost('h5', mac='00:00:00:00:00:14')
-h6 = net.addHost('h4', mac='00:00:00:00:00:15')
-h7 = net.addHost('h5', mac='00:00:00:00:00:16')
+h6 = net.addHost('h6', mac='00:00:00:00:00:15')
+h7 = net.addHost('h7', mac='00:00:00:00:00:16')
 
 # Add links
 
