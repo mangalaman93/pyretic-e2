@@ -137,6 +137,9 @@ h6.cmd(dest1 + " &")
 src_s1 = LoadGenerator.src(h6.IP(), 80, 100000)
 h1.cmd(src_s1 + " &")
 
+src_s2 = LoadGenerator.src(h6.IP(), 80, 100000)
+h2.cmd(src_s2 + " &")
+
 def main():
   pipelets = [pipe1, pipe2, pipe3, pipe4, pipe5]
   sources = [source1, source2, source3, source4, source5]
