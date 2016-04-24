@@ -132,12 +132,12 @@ pipe5.add_edges_from([
     (NF3, dest2,{'filter':match(dstport = 8000)})
     ])
     
-dest1 = LoadGenerator.dest(80)
-h6.cmd(dest1 + " &")
-src_s1 = LoadGenerator.src(h6.IP(), 80, 100000)
+#dest1 = LoadGenerator.dest(80)
+#h6.cmd(dest1 + " &")
+src_s1 = LoadGenerator.src(h6.IP(), 80, tcp=False, num_request=100000)
 h1.cmd(src_s1 + " &")
 
-src_s2 = LoadGenerator.src(h6.IP(), 80, 100000)
+src_s2 = LoadGenerator.src(h6.IP(), 80, tcp=False, num_request=100000)
 h2.cmd(src_s2 + " &")
 
 def main():
