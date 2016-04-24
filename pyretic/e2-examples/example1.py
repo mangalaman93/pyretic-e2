@@ -143,14 +143,14 @@ def main():
   print "==============PGRAPH==============="
   pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print(pgraph.nodes())
-  print(pgraph.edges(data=True))
+  print(pgraph.edges())
   
   # pdb.set_trace()
   
   print "==============IGRAPH==============="
   igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
   print(igraph.nodes())
-  print(igraph.edges())
+  print(igraph.edges(data=True))
 
   print "==============BIN PACKING==============="
   new_igraph = e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
