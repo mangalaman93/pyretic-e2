@@ -137,8 +137,19 @@ pipe5.add_edges_from([
 src_s1 = LoadGenerator.src(h6.IP(), 80, tcp=False, num_request=100000)
 h1.cmd(src_s1 + " &")
 
+'''
 src_s2 = LoadGenerator.src(h6.IP(), 80, tcp=False, num_request=100000)
 h2.cmd(src_s2 + " &")
+
+src_s3 = LoadGenerator.src(h7.IP(), 8000, tcp=False, num_request=100000)
+h3.cmd(src_s1 + " &")
+
+src_s4 = LoadGenerator.src(h7.IP(), 8000, tcp=False, num_request=100000)
+h4.cmd(src_s2 + " &")
+
+src_s5 = LoadGenerator.src(h7.IP(), 8000, tcp=False, num_request=100000)
+h5.cmd(src_s1 + " &")
+'''
 
 def main():
   pipelets = [pipe1, pipe2, pipe3, pipe4, pipe5]
