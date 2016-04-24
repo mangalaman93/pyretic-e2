@@ -67,18 +67,18 @@ c8 = net.addController('c8', controller=RemoteController, ip='127.0.0.1', port=6
 net.start()
 
 # creating NFs
-source1 = E2NF("h1", 1,'src1',inp_load_estimate=l1)
-source2 = E2NF("h2", 1,'src2',inp_load_estimate=l2)
-source3 = E2NF("h3", 1,'src3',inp_load_estimate=l3)
-source4 = E2NF("h4", 1,'src4',inp_load_estimate=l4)
-source5 = E2NF("h5", 1,'src5',inp_load_estimate=l5)
+source1 = E2NF("s6", 1,'src1',inp_load_estimate=l1)
+source2 = E2NF("s6", 1,'src2',inp_load_estimate=l2)
+source3 = E2NF("s6", 1,'src3',inp_load_estimate=l3)
+source4 = E2NF("s6", 1,'src4',inp_load_estimate=l4)
+source5 = E2NF("s6", 1,'src5',inp_load_estimate=l5)
 
 NF1 = E2NF("NF1", 1,'NF1',nf_capacity=nfc1)
 NF2 = E2NF("NF2", 1, 'NF2',nf_capacity=nfc2)
 NF3 = E2NF("NF3", 1, 'NF3',nf_capacity=nfc3)
 
-dest1 = E2NF("h6", 1, 'dst1')
-dest2 = E2NF("h7", 1,'dst2')
+dest1 = E2NF("s3", 1, 'dst1')
+dest2 = E2NF("s3", 1,'dst2')
 
 # create pipelets
 pipe1 = E2Pipelet("pipelet-1")
