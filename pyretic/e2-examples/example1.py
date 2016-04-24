@@ -149,8 +149,8 @@ def main():
   
   print "==============IGRAPH==============="
   igraph= e2_main.create_igraph(pgraph, [source1, source2, source3, source4, source5])
-  #print(igraph.nodes())
-  #print(igraph.edges())
+  print(igraph.nodes())
+  print(igraph.edges())
 
   print "==============BIN PACKING==============="
   new_igraph = e2_main.bin_pack(igraph, [source1,source2,source3,source4,source5], bin_capacity)
