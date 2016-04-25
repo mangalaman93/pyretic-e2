@@ -9,7 +9,7 @@ class LoadGenerator(object):
     @staticmethod
     def src(destip, destport, tcp=True, num_request=0):
         nping = commands.getoutput("which nping")
-        args = ""
+        args = "--tcp"
         if not tcp:
             args = "--udp "
         if nping:
