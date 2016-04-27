@@ -1,7 +1,7 @@
 ##########################################################
 # Computer Networks course project, CS6250, Georgia Tech #
 ##########################################################
-import matplotlib.pyplot as plt
+
 from pyretic.e2.lg import *
 from pyretic.e2.pipelet import *
 from pyretic.e2.e2 import *
@@ -49,7 +49,6 @@ h3 = net.addHost('h3')
 h4 = net.addHost('h4')
 h5 = net.addHost('h5')
 h6 = net.addHost('h6')
-h7 = net.addHost('h7')
 
 # Add links
 
@@ -63,7 +62,6 @@ net.addLink(h4, s8)
 #dest
 net.addLink(h5, s9)
 net.addLink(h6, s9)
-net.addLink(h7, s9)
 
 #hws
 net.addLink(s1,s7)
@@ -89,9 +87,9 @@ NF1 = E2NF("NF1", 1,'NF1',nf_capacity=nfc1)
 NF2 = E2NF("NF2", 1, 'NF2',nf_capacity=nfc2)
 NF3 = E2NF("NF3", 1, 'NF3',nf_capacity=nfc3)
 
-dest1 = E2NF("h5", 1, 'dst1', inp_load_estimate=(l1), switch_placed='s9')
-dest2 = E2NF("h6", 1,'dst2', inp_load_estimate=(l2+l3), switch_placed='s9')
-dest3 = E2NF("h7", 1,'dst3', inp_load_estimate=(l4), switch_placed='s9')
+dest1 = E2NF("h5", 1, 'dst1', inp_load_estimate=(l1+l2), switch_placed='s9')
+dest2 = E2NF("h6", 1,'dst2', inp_load_estimate=(l3+l4), switch_placed='s9')
+#dest3 = E2NF("h7", 1,'dst3', inp_load_estimate=(l4), switch_placed='s9')
 
 # create pipelets
 pipe1 = E2Pipelet("pipelet-1")
@@ -103,11 +101,11 @@ pipe1.add_edges_from([
     ])
 
 pipe2 = E2Pipelet("pipelet-2")
-pipe2.add_nodes_from([source2, NF1, NF3, dest2])
+pipe2.add_nodes_from([source2, NF1, NF2, dest1])
 pipe2.add_edges_from([
-    (source2, NF1, {'filter': match(dstport = 70)}),
-    (NF1, NF3, {'filter':match(dstport = 70)}),
-    (NF3, dest2, {'filter': match(dstport = 70)})
+    (source2, NF1, {'filter': match(dstport = 80)}),
+    (NF1, NF2, {'filter':match(dstport = 80)}),
+    (NF2, dest1, {'filter': match(dstport = 80)})
     ])
 
 pipe3 = E2Pipelet("pipelet-3")
@@ -119,11 +117,11 @@ pipe3.add_edges_from([
     ])
 
 pipe4 = E2Pipelet("pipelet-4")
-pipe4.add_nodes_from([source4, NF2, NF3, dest3])
+pipe4.add_nodes_from([source4, NF1, NF3, dest2])
 pipe4.add_edges_from([
-    (source4, NF2,{'filter':match(dstport = 8000)}),
-    (NF2, NF3,{'filter':match(dstport = 8000)}),
-    (NF3, dest3,{'filter':match(dstport = 8000)})
+    (source4, NF1, {'filter': match(dstport = 70)}),
+    (NF1, NF3, {'filter':match(dstport = 70)}),
+    (NF3, dest2, {'filter': match(dstport = 70)})
     ])
 
 #dest1 = LoadGenerator.dest(80)
@@ -131,13 +129,13 @@ pipe4.add_edges_from([
 src_s1 = LoadGenerator.src(h5.IP(), 80, tcp=False, num_request=100000)
 h1.cmd(src_s1 + " &")
 
-src_s2 = LoadGenerator.src(h6.IP(), 70, tcp=False, num_request=100000)
+src_s2 = LoadGenerator.src(h5.IP(), 80, tcp=False, num_request=100000)
 h2.cmd(src_s2 + " &")
 
 src_s3 = LoadGenerator.src(h6.IP(), 70, tcp=False, num_request=100000)
 h3.cmd(src_s3 + " &")
 
-src_s4 = LoadGenerator.src(h7.IP(), 8000, tcp=False, num_request=100000)
+src_s4 = LoadGenerator.src(h6.IP(), 70, tcp=False, num_request=100000)
 h4.cmd(src_s4 + " &")
 
 
@@ -150,9 +148,6 @@ def main():
   pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print(pgraph.nodes())
   print(pgraph.edges(data=True))
-  pos = nx.shell_layout(pgraph)
-  nx.draw(pgraph, pos)
-  plt.show()
 
   # pdb.set_trace()
 
@@ -160,9 +155,6 @@ def main():
   igraph= e2_main.create_igraph(pgraph, sources)
   print(igraph.nodes())
   print(igraph.edges(data=True))
-  pos = nx.shell_layout(igraph)
-  nx.draw(igraph, pos)
-  plt.show()
 
   print "==============BIN PACKING==============="
   new_igraph = e2_main.bin_pack(igraph, sources, bin_capacity)
