@@ -37,6 +37,16 @@ def update_igraph(igraph, node1_instance, node2_instance, filter_dict, source):
         filter_dict['source'] = [source]
     igraph.add_edge(node1_instance, node2_instance, filter_dict)
 
+def custom_edges(graph, source):
+    descs = nx.descendants(graph, source)
+    descs.add(source)
+    vertices = nx.topological_sort(graph)
+    for node in vertices:
+        if not node in descs:
+            continue
+        for s in graph.successors(node):
+            yield node, s
+
 class e2():
     def __init__(self, net, pipelets):
         self.net = net
@@ -207,6 +217,21 @@ class e2():
             if count == 2:
                 return True
         return False
+
+    def should_I_add_an_nf_to_nf_from_src(self, src, node1, node2):
+        for pipelet in self.pipelets:
+            vertices = nx.topological_sort(pipelet)
+            if not src == vertices[0]:
+                continue
+            count = 0
+            for (n1, n2) in pipelet.edges():
+                if n1 == node1:
+                    count += 1
+                if n2 == node2:
+                    count += 1
+            if count == 2:
+                return True
+        return False
     
     # Assumptions - one instance can handle all the load from one source
     # - source and destination are never connected directly
@@ -219,7 +244,7 @@ class e2():
             
             #print "DFS Edges:", list(nx.dfs_edges(pgraph, src))
             
-            for edge in list(nx.dfs_edges(pgraph, src)):
+            for edge in list(custom_edges(pgraph, src)):
                 node1 = edge[0]
                 node2 = edge[1]
                 #print "Nodes:", node1, node2
@@ -234,11 +259,12 @@ class e2():
                         node1_instance = current_instance[node1]
                         update_igraph(igraph, node1_instance, node2, pgraph.get_edge_data(node1, node2), src)
                 else:
-                    node1_instance = current_instance[node1]
-                    load = node1_instance.inp_load_estimate
-                    node2_instance = find_or_create_instance(load, node2)
-                    update_igraph(igraph, node1_instance, node2_instance, pgraph.get_edge_data(node1, node2), src)
-                    assert not (node2 in current_instance)
-                    current_instance[node2] = node2_instance
+                    if self.should_I_add_an_nf_to_nf_from_src(src, node1, node2):
+                        node1_instance = current_instance[node1]
+                        load = node1_instance.inp_load_estimate
+                        node2_instance = find_or_create_instance(load, node2)
+                        update_igraph(igraph, node1_instance, node2_instance, pgraph.get_edge_data(node1, node2), src)
+                        assert not (node2 in current_instance)
+                        current_instance[node2] = node2_instance
         # print list(igraph.edges())
         return igraph

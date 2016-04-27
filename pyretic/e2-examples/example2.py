@@ -146,6 +146,11 @@ def main():
   sources = [source1, source2, source3, source4]
   e2_main = e2(net, pipelets)
 
+  print "==============PIPELETS==============="
+  for pipelet in pipelets:
+    print pipelet.name
+    print pipelet.edges(data=True)
+
   print "==============PGRAPH==============="
   pgraph = e2_main.merge_pipelets(pipelets, "pgraph1")
   print(pgraph.nodes())
